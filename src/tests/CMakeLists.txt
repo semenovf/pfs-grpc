@@ -9,28 +9,24 @@ set_property(TARGET CATCH_OBJLIB PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Unit test targets
 ################################################################################
 list(APPEND MY_TEST_TARGETS async)
+set(async_SOURCES async.cpp)
+set(async_PROTOBUF_SOURCES test.proto)
 
 add_library(catch SHARED $<TARGET_OBJECTS:CATCH_OBJLIB>)
-
 find_package(Threads REQUIRED)
 
 #
 # Process all unit test targets
 #
 foreach (MY_TEST_TARGET ${MY_TEST_TARGETS})
-    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/bunch/${MY_TEST_TARGET}.cpp")
-        add_executable(test-${MY_TEST_TARGET} "${CMAKE_CURRENT_SOURCE_DIR}/bunch/${MY_TEST_TARGET}.cpp")
-    elseif (test-${MY_TEST_TARGET}_SOURCES)
-        add_executable(test-${MY_TEST_TARGET} ${test-${MY_TEST_TARGET}_SOURCES})
-    else()
-        add_executable(test-${MY_TEST_TARGET} ${MY_TEST_TARGET}/test.cpp)
-    endif()
+    set(PROTOBUF_INPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${MY_TEST_TARGET}")
+    set(PROTOBUF_SOURCES ${${MY_TEST_TARGET}_PROTOBUF_SOURCES})
+    include(${CMAKE_SOURCE_DIR}/cmake/gRPC.cmake)
 
-    if(test-${MY_TEST_TARGET}_LIBS)
-        target_link_libraries(test-${MY_TEST_TARGET} catch ${test-${MY_TEST_TARGET}_LIBS} ${CMAKE_THREAD_LIBS_INIT})
-    else()
-        target_link_libraries(test-${MY_TEST_TARGET} catch ${CMAKE_THREAD_LIBS_INIT})
-    endif()
+    add_executable(test-${MY_TEST_TARGET} ${MY_TEST_TARGET}/${${MY_TEST_TARGET}_SOURCES} ${pfs_GRPC_SOURCES})
+    link_directories(${pfs_GRPC_LIBRARY_DIRS})
+    target_include_directories(test-${MY_TEST_TARGET} PRIVATE ${pfs_GRPC_INCLUDE_DIRS})
+    target_link_libraries(test-${MY_TEST_TARGET} catch ${test-${MY_TEST_TARGET}_LIBS} ${pfs_GRPC_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
     add_test(NAME ${MY_TEST_TARGET} COMMAND test-${MY_TEST_TARGET})
 endforeach(MY_TEST_TARGET)

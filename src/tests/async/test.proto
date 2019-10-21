@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package TestRpc;
+
+service TestService {
+    // Simple RPC
+    rpc CallStart(StartService) returns (ServiceStatus) {}
+    rpc CallStop(StopService) returns (ServiceStatus) {}
+
+    // Server-side streaming RPC
+    rpc CallListModules(ListModules) returns (stream ModuleStatus) {}
+
+    // Client-side streaming RPC
+    rpc SendSegment(stream Segment) returns (Complete) {}
+
+    // Bidirectional streaming RPC
+    rpc CallStartModule(stream StartModule) returns (stream ModuleStatus) {}
+}
+
+enum ServiceStatusEnum {
+    SERVICE_STARTED         = 0;
+    SERVICE_STOPPED         = 1;
+    SERVICE_ALREADY_STARTED = 2;
+    SERVICE_START_FAILED    = 3;
+}
+
+enum ModuleStatusEnum {
+    MODULE_ACTIVATED   = 0;
+    MODULE_DEACTIVATED = 1;
+}
+
+message StartService {
+}
+
+message StopService {
+}
+
+message ServiceStatus {
+    ServiceStatusEnum status = 2;
+}
+
+message ListModules {}
+
+message ModuleStatus {
+    string name = 1;
+    ModuleStatusEnum status = 2;
+}
+
+message Segment {
+    string id   = 1;
+    int32 index = 2;
+    int32 total = 3;
+}
+
+message Complete {
+    string id = 1;
+    bool complete = 2;
+}
+
+message StartModule {
+    string name = 1;
+}
+
