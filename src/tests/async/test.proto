@@ -4,17 +4,17 @@ package TestRpc;
 
 service TestService {
     // Simple RPC
-    rpc CallStart(StartService) returns (ServiceStatus) {}
-    rpc CallStop(StopService) returns (ServiceStatus) {}
+    rpc Start(StartService) returns (ServiceStatus) {}
+    rpc Stop(StopService) returns (ServiceStatus) {}
 
     // Server-side streaming RPC
-    rpc CallListModules(ListModules) returns (stream ModuleStatus) {}
+    rpc ListModules(GetListModules) returns (stream ModuleStatus) {}
 
     // Client-side streaming RPC
-    rpc SendSegment(stream Segment) returns (Complete) {}
+    rpc SendSegments(stream Segment) returns (Complete) {}
 
     // Bidirectional streaming RPC
-    rpc CallStartModule(stream StartModule) returns (stream ModuleStatus) {}
+    rpc StartModules(stream StartModule) returns (stream ModuleStatus) {}
 }
 
 enum ServiceStatusEnum {
@@ -39,7 +39,7 @@ message ServiceStatus {
     ServiceStatusEnum status = 2;
 }
 
-message ListModules {}
+message GetListModules {}
 
 message ModuleStatus {
     string name = 1;
