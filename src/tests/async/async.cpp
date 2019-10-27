@@ -8,8 +8,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "pfs/grpc/async_client.hpp"
 #include "pfs/grpc/async_server.hpp"
-#include "test.pb.h"
-#include "test.grpc.pb.h"
+#include "async.pb.h"
+#include "async.grpc.pb.h"
 #include <map>
 #include <thread>
 
