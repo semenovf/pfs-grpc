@@ -13,10 +13,10 @@ doxygen/
 nbproject/
 src/tmp/
 
-Makefile
-Makefile.*
-makefile
-makefile.*
+#Makefile
+#Makefile.*
+#makefile
+#makefile.*
 *.kdev4
 *.make
 *.mk
