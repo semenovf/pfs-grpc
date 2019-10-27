@@ -7,8 +7,6 @@ build*/
 .idea/
 .project
 .cproject
-debug/
-release/
 doxygen/
 nbproject/
 src/tmp/
