@@ -26,7 +26,7 @@ src/tmp/
 ~*
 *~
 *.bak
-*.map
+#*.map
 *.sdf
 *.slo
 *.lo
