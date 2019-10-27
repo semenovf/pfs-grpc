@@ -17,7 +17,7 @@ else()
 endif()
 
 set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/third_party/protobuf/protoc" PARENT_SCOPE)
-set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
+set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin" PARENT_SCOPE)
 
 ################################################################################
 # Protobuf compiler version (informative purpose only)
