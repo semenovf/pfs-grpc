@@ -22,7 +22,7 @@ find_package(Threads REQUIRED)
 foreach (MY_TEST_TARGET ${MY_TEST_TARGETS})
     set(PROTOBUF_INPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${MY_TEST_TARGET}")
     set(PROTOBUF_SOURCES ${${MY_TEST_TARGET}_PROTOBUF_SOURCES})
-    include(${CMAKE_SOURCE_DIR}/cmake/gRPC.cmake)
+    include(${pfs_grpc_SOURCE_DIR}/cmake/gRPC.cmake)
 
     add_executable(test-${MY_TEST_TARGET} ${MY_TEST_TARGET}/${${MY_TEST_TARGET}_SOURCES} ${pfs_grpc_SOURCES})
     link_directories(${pfs_GRPC_LIBRARY_DIRS})

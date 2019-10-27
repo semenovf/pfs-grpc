@@ -4,18 +4,20 @@ project(pfs-grpc)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 option(pfs_grpc_BUILD_TESTS "Build tests" ON)
 
+set(pfs_grpc_SOURCE_DIR "${PROJECT_SOURCE_DIR}")
+
 # Submodules downloaded (allow use of last version of gRPC library and
 # it's dependences)
 if (EXISTS "${PROJECT_SOURCE_DIR}/3rdparty/grpc/CMakeLists.txt")
-    set(pfs_grpc_GRPC_SOURCE_ROOT_DIR "${PROJECT_SOURCE_DIR}/3rdparty/grpc")
-    set(pfs_grpc_GRPC_BINARY_ROOT_DIR "${PROJECT_BINARY_DIR}/3rdparty/grpc")
+    set(pfs_grpc_GRPC_SOURCE_DIR "${PROJECT_SOURCE_DIR}/3rdparty/grpc")
+    set(pfs_grpc_GRPC_BINARY_DIR "${PROJECT_BINARY_DIR}/3rdparty/grpc")
 else()
-    set(pfs_grpc_GRPC_SOURCE_ROOT_DIR "${PROJECT_SOURCE_DIR}/3rdparty/preloaded/grpc")
-    set(pfs_grpc_GRPC_BINARY_ROOT_DIR "${PROJECT_BINARY_DIR}/3rdparty/preloaded/grpc")
+    set(pfs_grpc_GRPC_SOURCE_DIR "${PROJECT_SOURCE_DIR}/3rdparty/preloaded/grpc")
+    set(pfs_grpc_GRPC_BINARY_DIR "${PROJECT_BINARY_DIR}/3rdparty/preloaded/grpc")
 endif()
 
-set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_ROOT_DIR}/third_party/protobuf/protoc")
-set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_ROOT_DIR}/grpc_cpp_plugin")
+set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/third_party/protobuf/protoc")
+set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
 
 ################################################################################
 # Protobuf compiler version (informative purpose only)
@@ -26,9 +28,9 @@ set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_ROOT_DIR}/grpc_cpp_plu
 #
 
 set(pfs_grpc_INCLUDE_DIRS
-    ${CMAKE_CURRENT_LIST_DIR}/include
-    ${pfs_grpc_GRPC_SOURCE_ROOT_DIR}/include
-    ${pfs_grpc_GRPC_SOURCE_ROOT_DIR}/third_party/protobuf/src)
+    ${pfs_grpc_SOURCE_DIR}/include
+    ${pfs_grpc_GRPC_SOURCE_DIR}/include
+    ${pfs_grpc_GRPC_SOURCE_DIR}/third_party/protobuf/src)
 
 set(pfs_grpc_LIBRARY_DIRS
 #     ${CMAKE_BINARY_DIR}/3rdparty/grpc
@@ -43,12 +45,12 @@ set(pfs_grpc_LIBRARIES grpc++)
 
 message("
 ================================================================================
-gRPC source dir  : ${pfs_grpc_GRPC_SOURCE_ROOT_DIR}
+gRPC source dir  : ${pfs_grpc_GRPC_SOURCE_DIR}
 Protobuf compiler: ${pfs_grpc_PROTOC_BIN}
 gRPC C++ plugin  : ${pfs_grpc_GRPC_CPP_PLUGIN_PATH}
 ================================================================================")
 
-add_subdirectory(${pfs_grpc_GRPC_SOURCE_ROOT_DIR})
+add_subdirectory(${pfs_grpc_GRPC_SOURCE_DIR})
 
 if (pfs_grpc_BUILD_TESTS)
     enable_testing()
