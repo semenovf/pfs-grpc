@@ -16,7 +16,7 @@ else()
     set(pfs_grpc_GRPC_BINARY_DIR "${PROJECT_BINARY_DIR}/3rdparty/preloaded/grpc")
 endif()
 
-set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/third_party/protobuf/protoc")
+set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/third_party/protobuf/protoc" PARENT_SCOPE)
 set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
 
 ################################################################################
