@@ -166,6 +166,58 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+// async_server_pushing
+//==============================================================================
+// Modification of 'Server-side streaming RPC'.
+// Activating responses from server
+//
+////////////////////////////////////////////////////////////////////////////////
+template <typename ResponseType>
+class async_server_pushing : public basic_async
+{
+public:
+    using response_type = ResponseType;
+    using async_interface = ::grpc::ClientAsyncReader<response_type>;
+    using rpc_type = std::unique_ptr<async_interface>;
+    using response_handler = std::function<void (response_type const &)>;
+
+protected:
+    rpc_type         _rpc;
+    response_type    _response;
+    response_handler _on_response;
+
+public:
+    async_server_pushing () : basic_async{} {}
+    virtual ~async_server_pushing () {}
+
+    void prepare_async (rpc_type && rpc, response_handler && on_response)
+    {
+        _on_response = std::forward<response_handler>(on_response);
+        _rpc = std::forward<rpc_type>(rpc);
+        _rpc->StartCall(this);
+    }
+
+    virtual void process_response (bool ok) override
+    {
+        if (!_complete) {
+            if (!ok) {
+                _rpc->Finish(& _status, this);
+                _complete = true;
+
+                if (!_status.ok()) {
+                    _on_error(_status);
+                }
+            } else {
+                _rpc->Read(& _response, this);
+                _on_response(_response);
+            }
+        } else {
+            delete this;
+        }
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
 // async_client_streaming
 //==============================================================================
 // 'Client-side streaming RPC' (many-to-one call) where the client writes
@@ -419,6 +471,27 @@ public:
         auto c = new async_type(std::forward<std::list<RequestType>>(requests));
         auto rpc((_stub.get()->* prepareAsyncReaderWriter)(
                   & c->context()
+                , & _cqueue));
+        c->prepare_async(std::move(rpc)
+                , std::forward<typename async_type::response_handler>(on_response));
+
+        return true;
+    }
+
+    template <typename RequestType, typename ResponseType>
+    bool enable_push (RequestType const & request
+            , typename async_server_streaming<ResponseType>::rpc_type (stub_type::* prepareAsyncReader) (
+                      grpc_client_context *
+                    , RequestType const &
+                    , grpc_completion_queue *)
+            , std::function<void (ResponseType const &)> && on_response)
+    {
+        using async_type = async_server_pushing<ResponseType>;
+
+        auto c = new async_type;
+        auto rpc((_stub.get()->* prepareAsyncReader)(
+                  & c->context()
+                , request
                 , & _cqueue));
         c->prepare_async(std::move(rpc)
                 , std::forward<typename async_type::response_handler>(on_response));
