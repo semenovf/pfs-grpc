@@ -11,12 +11,18 @@ if (EXISTS "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc/CMakeLists.txt")
 else()
     set(pfs_grpc_GRPC_SOURCE_DIR "${pfs_grpc_SOURCE_DIR}/3rdparty/preloaded/grpc")
     set(pfs_grpc_GRPC_BINARY_SUBDIR "pfs-grpc/3rdparty/preloaded/grpc")
-
 endif()
 
-set(pfs_grpc_GRPC_BINARY_DIR "${CMAKE_BINARY_DIR}/${pfs_grpc_GRPC_BINARY_SUBDIR}")
-set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/third_party/protobuf/protoc")
-set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
+if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(pfs_grpc_GRPC_BINARY_DIR "${CMAKE_BINARY_DIR}/${pfs_grpc_GRPC_BINARY_SUBDIR}")
+    set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/third_party/protobuf/protoc")
+    set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
+else()
+    set(pfs_grpc_GRPC_BINARY_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set(pfs_grpc_PROTOC_BIN "${pfs_grpc_GRPC_BINARY_DIR}/protoc")
+    set(pfs_grpc_GRPC_CPP_PLUGIN_PATH "${pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
+endif()
+
 set(pfs_grpc_GRPC_CMAKE "${pfs_grpc_SOURCE_DIR}/gRPC.cmake")
 
 ################################################################################

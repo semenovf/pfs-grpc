@@ -44,7 +44,7 @@ add_custom_command(COMMAND ${pfs_grpc_PROTOC_BIN}
         --plugin=protoc-gen-grpc=\"${pfs_grpc_GRPC_CPP_PLUGIN_PATH}\"
         ${pfs_grpc_PROTOBUF_SOURCES}
     OUTPUT ${pfs_grpc_GRPC_PROTOBUF_OUTPUT}
-    DEPENDS ${pfs_grpc_PROTOBUF_SOURCES})
+    DEPENDS ${pfs_grpc_PROTOBUF_SOURCES} protobuf::protoc)
 
 ################################################################################
 # Generate Protobuf-specific source codes
@@ -54,6 +54,6 @@ add_custom_command(COMMAND ${pfs_grpc_PROTOC_BIN}
         --cpp_out=\"${pfs_grpc_PROTOBUF_OUTPUT_DIRECTORY}\"
         ${pfs_grpc_PROTOBUF_SOURCES}
     OUTPUT ${pfs_grpc_PROTOBUF_OUTPUT}
-    DEPENDS ${pfs_grpc_PROTOBUF_SOURCES})
+    DEPENDS ${pfs_grpc_PROTOBUF_SOURCES} protobuf::protoc)
 
 list(APPEND pfs_grpc_INCLUDE_DIRS ${pfs_grpc_PROTOBUF_OUTPUT_DIRECTORY})
