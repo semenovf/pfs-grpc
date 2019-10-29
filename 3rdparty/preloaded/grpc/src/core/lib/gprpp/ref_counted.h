@@ -40,7 +40,12 @@ namespace grpc_core {
 // PolymorphicRefCount enforces polymorphic destruction of RefCounted.
 class PolymorphicRefCount {
  public:
-  virtual ~PolymorphicRefCount() = default;
+  // --wladt--
+  // Replaced '= default' to '{}' to
+  // disable error: looser throw specifier for ...
+  // ... overriding ‘grpc_core::RefCounted<Child, Impl>::~RefCounted() noexcept (true)
+  // (g++ 4.7.2)
+  virtual ~PolymorphicRefCount() {} //= default;
 };
 
 // NonPolymorphicRefCount does not enforce polymorphic destruction of
