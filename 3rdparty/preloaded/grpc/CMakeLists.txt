@@ -907,7 +907,8 @@ if(WIN32 AND MSVC)
   endif()
 endif()
 
-
+#--wladt--
+target_compile_definitions(gpr PRIVATE "-D__STDC_LIMIT_MACROS")
 target_include_directories(gpr
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
