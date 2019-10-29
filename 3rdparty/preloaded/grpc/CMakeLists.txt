@@ -983,9 +983,6 @@ if (gRPC_INSTALL)
   )
 endif()
 
-#--wladt--
-target_compile_definitions(grpc PRIVATE "-D__STDC_LIMIT_MACROS")
-
 add_library(grpc
   src/core/lib/surface/init.cc
   src/core/lib/avl/avl.cc
@@ -1377,6 +1374,8 @@ if(WIN32 AND MSVC)
   endif()
 endif()
 
+#--wladt--
+target_compile_definitions(grpc PRIVATE "-D__STDC_LIMIT_MACROS")
 
 target_include_directories(grpc
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
