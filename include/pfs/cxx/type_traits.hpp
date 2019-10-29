@@ -37,7 +37,7 @@ namespace std {
 #if PFS_HAVE_NOT_is_trivially_destructible
 
 template <typename T>
-using is_trivially_destructible = pfs::is_trivially_destructible;
+using is_trivially_destructible = pfs::is_trivially_destructible<T>;
 
 #endif // HAVE_NOT_is_trivially_destructible
 } // std
