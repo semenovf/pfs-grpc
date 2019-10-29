@@ -7,6 +7,8 @@ add_library(CATCH_OBJLIB OBJECT catch-main.cpp)
 set_property(TARGET CATCH_OBJLIB PROPERTY POSITION_INDEPENDENT_CODE 1)
 add_library(catch SHARED $<TARGET_OBJECTS:CATCH_OBJLIB>)
 
+#include_directories(CMAKE_SOURCE_DIR)
+
 ################################################################################
 # Unit test targets
 ################################################################################
@@ -31,3 +33,11 @@ foreach (MY_TEST_TARGET ${MY_TEST_TARGETS})
 
     add_test(NAME ${MY_TEST_TARGET} COMMAND test-${MY_TEST_TARGET})
 endforeach(MY_TEST_TARGET)
+
+#
+# Additional tests
+#
+include_directories(${CMAKE_SOURCE_DIR}/include)
+add_executable(test-type_traits type_traits.cpp catch)
+target_link_libraries(test-type_traits catch)
+add_test(NAME type_traits COMMAND test-type_traits)
