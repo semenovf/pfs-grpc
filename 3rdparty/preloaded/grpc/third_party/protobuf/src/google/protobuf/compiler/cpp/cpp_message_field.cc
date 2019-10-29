@@ -194,7 +194,7 @@ void MessageFieldGenerator::GenerateInlineAccessorDefinitions(
       "  if ($name$_ == nullptr) {\n"
       "    auto* p = CreateMaybeMessage<$type$>(GetArenaNoVirtual());\n");
   if (implicit_weak_field_) {
-    format("    $name$_ = reinterpret_cast<::$proto_ns$::MessageLite*>(p);\n");
+    format("    $name$_ = reinterpret_cast< ::$proto_ns$::MessageLite*>(p);\n");
   } else {
     format("    $name$_ = p;\n");
   }
@@ -226,7 +226,7 @@ void MessageFieldGenerator::GenerateInlineAccessorDefinitions(
     format(
         "    ::$proto_ns$::Arena* submessage_arena =\n"
         "      "
-        "reinterpret_cast<::$proto_ns$::MessageLite*>($name$)->GetArena();\n");
+        "reinterpret_cast< ::$proto_ns$::MessageLite*>($name$)->GetArena();\n");
   } else if (!SupportsArenas(descriptor_->message_type())) {
     format("    ::$proto_ns$::Arena* submessage_arena = nullptr;\n");
   } else {
@@ -493,7 +493,7 @@ void MessageOneofFieldGenerator::GenerateNonInlineAccessorDefinitions(
     format(
         "    ::$proto_ns$::Arena* submessage_arena =\n"
         "      "
-        "reinterpret_cast<::$proto_ns$::MessageLite*>($name$)->GetArena();\n");
+        "reinterpret_cast< ::$proto_ns$::MessageLite*>($name$)->GetArena();\n");
   } else if (!SupportsArenas(descriptor_->message_type())) {
     format("    ::$proto_ns$::Arena* submessage_arena = nullptr;\n");
   } else {

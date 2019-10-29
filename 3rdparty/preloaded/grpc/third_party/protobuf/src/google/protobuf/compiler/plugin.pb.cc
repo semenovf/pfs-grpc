@@ -308,7 +308,7 @@ const char* Version::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
     switch (tag >> 3) {
       // optional int32 major = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
           HasBitSetters::set_has_major(&has_bits);
           major_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
@@ -316,7 +316,7 @@ const char* Version::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         continue;
       // optional int32 minor = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
           HasBitSetters::set_has_minor(&has_bits);
           minor_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
@@ -324,7 +324,7 @@ const char* Version::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         continue;
       // optional int32 patch = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           HasBitSetters::set_has_patch(&has_bits);
           patch_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
@@ -332,7 +332,7 @@ const char* Version::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         continue;
       // optional string suffix = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_suffix(), ptr, ctx, "google.protobuf.compiler.Version.suffix");
           CHK_(ptr);
         } else goto handle_unusual;
@@ -364,7 +364,7 @@ bool Version::MergePartialFromCodedStream(
   ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:google.protobuf.compiler.Version)
   for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -765,40 +765,40 @@ const char* CodeGeneratorRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAM
     switch (tag >> 3) {
       // repeated string file_to_generate = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(add_file_to_generate(), ptr, ctx, "google.protobuf.compiler.CodeGeneratorRequest.file_to_generate");
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 10);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad< ::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 10);
         } else goto handle_unusual;
         continue;
       // optional string parameter = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_parameter(), ptr, ctx, "google.protobuf.compiler.CodeGeneratorRequest.parameter");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // optional .google.protobuf.compiler.Version compiler_version = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
           ptr = ctx->ParseMessage(mutable_compiler_version(), ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // repeated .google.protobuf.FileDescriptorProto proto_file = 15;
       case 15:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 122)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 122)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(add_proto_file(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 122);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad< ::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 122);
         } else goto handle_unusual;
         continue;
       default: {
@@ -828,7 +828,7 @@ bool CodeGeneratorRequest::MergePartialFromCodedStream(
   ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:google.protobuf.compiler.CodeGeneratorRequest)
   for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1244,21 +1244,21 @@ const char* CodeGeneratorResponse_File::_InternalParse(const char* ptr, ::PROTOB
     switch (tag >> 3) {
       // optional string name = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_name(), ptr, ctx, "google.protobuf.compiler.CodeGeneratorResponse.File.name");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // optional string insertion_point = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_insertion_point(), ptr, ctx, "google.protobuf.compiler.CodeGeneratorResponse.File.insertion_point");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // optional string content = 15;
       case 15:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 122)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 122)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_content(), ptr, ctx, "google.protobuf.compiler.CodeGeneratorResponse.File.content");
           CHK_(ptr);
         } else goto handle_unusual;
@@ -1290,7 +1290,7 @@ bool CodeGeneratorResponse_File::MergePartialFromCodedStream(
   ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:google.protobuf.compiler.CodeGeneratorResponse.File)
   for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -1656,21 +1656,21 @@ const char* CodeGeneratorResponse::_InternalParse(const char* ptr, ::PROTOBUF_NA
     switch (tag >> 3) {
       // optional string error = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8Verify(mutable_error(), ptr, ctx, "google.protobuf.compiler.CodeGeneratorResponse.error");
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
       // repeated .google.protobuf.compiler.CodeGeneratorResponse.File file = 15;
       case 15:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 122)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 122)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(add_file(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 122);
+          } while (::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad< ::PROTOBUF_NAMESPACE_ID::uint8>(ptr) == 122);
         } else goto handle_unusual;
         continue;
       default: {
@@ -1700,7 +1700,7 @@ bool CodeGeneratorResponse::MergePartialFromCodedStream(
   ::PROTOBUF_NAMESPACE_ID::uint32 tag;
   // @@protoc_insertion_point(parse_start:google.protobuf.compiler.CodeGeneratorResponse)
   for (;;) {
-    ::std::pair<::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    ::std::pair< ::PROTOBUF_NAMESPACE_ID::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::GetTagFieldNumber(tag)) {

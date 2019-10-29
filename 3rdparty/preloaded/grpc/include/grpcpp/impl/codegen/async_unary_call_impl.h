@@ -179,14 +179,14 @@ class ClientAsyncResponseReader final
   static void* operator new(std::size_t size);
   static void* operator new(std::size_t /*size*/, void* p) { return p; }
 
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpClientSendClose,
                               ::grpc::internal::CallOpRecvInitialMetadata,
                               ::grpc::internal::CallOpRecvMessage<R>,
                               ::grpc::internal::CallOpClientRecvStatus>
       single_buf;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvMessage<R>,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvMessage<R>,
                               ::grpc::internal::CallOpClientRecvStatus>
       finish_buf;
 };
@@ -288,9 +288,9 @@ class ServerAsyncResponseWriter final
 
   ::grpc::internal::Call call_;
   ::grpc_impl::ServerContext* ctx_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata>
       meta_buf_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpServerSendStatus>
       finish_buf_;
@@ -300,12 +300,12 @@ class ServerAsyncResponseWriter final
 
 namespace std {
 template <class R>
-class default_delete<::grpc_impl::ClientAsyncResponseReader<R>> {
+class default_delete< ::grpc_impl::ClientAsyncResponseReader<R>> {
  public:
   void operator()(void* /*p*/) {}
 };
 template <class R>
-class default_delete<::grpc_impl::ClientAsyncResponseReaderInterface<R>> {
+class default_delete< ::grpc_impl::ClientAsyncResponseReaderInterface<R>> {
  public:
   void operator()(void* /*p*/) {}
 };

@@ -104,7 +104,7 @@ void TlsCredentialReloadArg::set_key_materials_config(
     c_arg_->key_materials_config = nullptr;
     return;
   }
-  ::grpc_core::InlinedVector<::grpc_core::PemKeyCertPair, 1>
+  ::grpc_core::InlinedVector< ::grpc_core::PemKeyCertPair, 1>
       c_pem_key_cert_pair_list;
   for (const auto& key_cert_pair :
        key_materials_config->pem_key_cert_pair_list()) {

@@ -35,7 +35,7 @@ struct grpc_channel;
 
 namespace grpc {
 
-std::shared_ptr<::grpc_impl::Channel> CreateChannelInternal(
+std::shared_ptr< ::grpc_impl::Channel> CreateChannelInternal(
     const grpc::string& host, grpc_channel* c_channel,
     std::vector<
         std::unique_ptr<experimental::ClientInterceptorFactoryInterface>>
@@ -118,7 +118,7 @@ class Channel final : public ::grpc::ChannelInterface,
   ::grpc_impl::CompletionQueue* callback_cq_ = nullptr;
 
   std::vector<
-      std::unique_ptr<::grpc::experimental::ClientInterceptorFactoryInterface>>
+      std::unique_ptr< ::grpc::experimental::ClientInterceptorFactoryInterface>>
       interceptor_creators_;
 };
 

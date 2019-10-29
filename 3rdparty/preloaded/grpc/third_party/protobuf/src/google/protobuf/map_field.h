@@ -783,7 +783,7 @@ class PROTOBUF_EXPORT MapIterator {
 
 GOOGLE_PROTOBUF_HASH_NAMESPACE_DECLARATION_START
 template <>
-struct hash<::PROTOBUF_NAMESPACE_ID::MapKey> {
+struct hash< ::PROTOBUF_NAMESPACE_ID::MapKey> {
   size_t operator()(const ::PROTOBUF_NAMESPACE_ID::MapKey& map_key) const {
     switch (map_key.type()) {
       case ::PROTOBUF_NAMESPACE_ID::FieldDescriptor::CPPTYPE_DOUBLE:

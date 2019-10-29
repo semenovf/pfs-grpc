@@ -316,7 +316,7 @@ void ServerContext::BeginCompletionOp(::grpc::internal::Call* call,
 }
 
 ::grpc::internal::CompletionQueueTag* ServerContext::GetCompletionOpTag() {
-  return static_cast<::grpc::internal::CompletionQueueTag*>(completion_op_);
+  return static_cast< ::grpc::internal::CompletionQueueTag*>(completion_op_);
 }
 
 void ServerContext::AddInitialMetadata(const grpc::string& key,

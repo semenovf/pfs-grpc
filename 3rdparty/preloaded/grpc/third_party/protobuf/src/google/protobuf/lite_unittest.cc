@@ -615,7 +615,7 @@ TEST(Lite, AllLite28) {
     MapLiteTestUtil::SetMapFields(&message1);
     int size = message1.ByteSize();
     data.resize(size);
-    ::google::protobuf::uint8* start = reinterpret_cast<::google::protobuf::uint8*>(::google::protobuf::string_as_array(&data));
+    ::google::protobuf::uint8* start = reinterpret_cast< ::google::protobuf::uint8*>(::google::protobuf::string_as_array(&data));
     ::google::protobuf::uint8* end = message1.SerializeWithCachedSizesToArray(start);
     EXPECT_EQ(size, end - start);
     EXPECT_TRUE(message2.ParseFromString(data));

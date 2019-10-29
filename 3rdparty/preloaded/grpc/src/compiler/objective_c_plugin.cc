@@ -81,11 +81,11 @@ class ObjectiveCGrpcGenerator : public grpc::protobuf::compiler::CodeGenerator {
     }
 
     ::grpc::string framework;
-    std::vector<::grpc::string> params_list =
+    std::vector< ::grpc::string> params_list =
         grpc_generator::tokenize(parameter, ",");
     for (auto param_str = params_list.begin(); param_str != params_list.end();
          ++param_str) {
-      std::vector<::grpc::string> param =
+      std::vector< ::grpc::string> param =
           grpc_generator::tokenize(*param_str, "=");
       if (param[0] == "generate_for_named_framework") {
         if (param.size() != 2) {

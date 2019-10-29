@@ -34,9 +34,9 @@ namespace grpc_impl {
 /// \param creds Credentials to use for the created channel. If it does not
 /// hold an object or is invalid, a lame channel (one on which all operations
 /// fail) is returned.
-std::shared_ptr<::grpc::Channel> CreateChannelImpl(
+std::shared_ptr< ::grpc::Channel> CreateChannelImpl(
     const grpc::string& target,
-    const std::shared_ptr<::grpc::ChannelCredentials>& creds);
+    const std::shared_ptr< ::grpc::ChannelCredentials>& creds);
 
 /// Create a new \em custom \a Channel pointing to \a target.
 ///
@@ -48,9 +48,9 @@ std::shared_ptr<::grpc::Channel> CreateChannelImpl(
 /// hold an object or is invalid, a lame channel (one on which all operations
 /// fail) is returned.
 /// \param args Options for channel creation.
-std::shared_ptr<::grpc::Channel> CreateCustomChannelImpl(
+std::shared_ptr< ::grpc::Channel> CreateCustomChannelImpl(
     const grpc::string& target,
-    const std::shared_ptr<::grpc::ChannelCredentials>& creds,
+    const std::shared_ptr< ::grpc::ChannelCredentials>& creds,
     const ::grpc::ChannelArguments& args);
 
 namespace experimental {
@@ -65,7 +65,7 @@ namespace experimental {
 /// hold an object or is invalid, a lame channel (one on which all operations
 /// fail) is returned.
 /// \param args Options for channel creation.
-std::shared_ptr<::grpc::Channel> CreateCustomChannelWithInterceptors(
+std::shared_ptr< ::grpc::Channel> CreateCustomChannelWithInterceptors(
     const grpc::string& target,
     const std::shared_ptr<grpc::ChannelCredentials>& creds,
     const ::grpc::ChannelArguments& args,

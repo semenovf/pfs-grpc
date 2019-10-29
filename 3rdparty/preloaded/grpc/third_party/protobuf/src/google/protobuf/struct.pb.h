@@ -82,8 +82,8 @@ PROTOBUF_NAMESPACE_OPEN
 
 enum NullValue : int {
   NULL_VALUE = 0,
-  NullValue_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  NullValue_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+  NullValue_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  NullValue_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 PROTOBUF_EXPORT bool NullValue_IsValid(int value);
 constexpr NullValue NullValue_MIN = NULL_VALUE;

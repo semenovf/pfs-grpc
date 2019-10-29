@@ -103,8 +103,8 @@ enum Field_Kind : int {
   Field_Kind_TYPE_SFIXED64 = 16,
   Field_Kind_TYPE_SINT32 = 17,
   Field_Kind_TYPE_SINT64 = 18,
-  Field_Kind_Field_Kind_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  Field_Kind_Field_Kind_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+  Field_Kind_Field_Kind_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  Field_Kind_Field_Kind_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 PROTOBUF_EXPORT bool Field_Kind_IsValid(int value);
 constexpr Field_Kind Field_Kind_Kind_MIN = Field_Kind_TYPE_UNKNOWN;
@@ -130,8 +130,8 @@ enum Field_Cardinality : int {
   Field_Cardinality_CARDINALITY_OPTIONAL = 1,
   Field_Cardinality_CARDINALITY_REQUIRED = 2,
   Field_Cardinality_CARDINALITY_REPEATED = 3,
-  Field_Cardinality_Field_Cardinality_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  Field_Cardinality_Field_Cardinality_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+  Field_Cardinality_Field_Cardinality_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  Field_Cardinality_Field_Cardinality_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 PROTOBUF_EXPORT bool Field_Cardinality_IsValid(int value);
 constexpr Field_Cardinality Field_Cardinality_Cardinality_MIN = Field_Cardinality_CARDINALITY_UNKNOWN;
@@ -155,8 +155,8 @@ inline bool Field_Cardinality_Parse(
 enum Syntax : int {
   SYNTAX_PROTO2 = 0,
   SYNTAX_PROTO3 = 1,
-  Syntax_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
-  Syntax_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+  Syntax_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  Syntax_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits< ::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 PROTOBUF_EXPORT bool Syntax_IsValid(int value);
 constexpr Syntax Syntax_MIN = SYNTAX_PROTO2;

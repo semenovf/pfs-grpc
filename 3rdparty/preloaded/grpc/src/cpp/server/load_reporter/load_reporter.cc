@@ -288,14 +288,14 @@ LoadReporter::GenerateLoadBalancingFeedback() {
   return feedback;
 }
 
-::google::protobuf::RepeatedPtrField<::grpc::lb::v1::Load>
+::google::protobuf::RepeatedPtrField< ::grpc::lb::v1::Load>
 LoadReporter::GenerateLoads(const grpc::string& hostname,
                             const grpc::string& lb_id) {
   grpc_core::MutexLock lock(&store_mu_);
   auto assigned_stores = load_data_store_.GetAssignedStores(hostname, lb_id);
   GPR_ASSERT(assigned_stores != nullptr);
   GPR_ASSERT(!assigned_stores->empty());
-  ::google::protobuf::RepeatedPtrField<::grpc::lb::v1::Load> loads;
+  ::google::protobuf::RepeatedPtrField< ::grpc::lb::v1::Load> loads;
   for (PerBalancerStore* per_balancer_store : *assigned_stores) {
     GPR_ASSERT(!per_balancer_store->IsSuspended());
     if (!per_balancer_store->load_record_map().empty()) {

@@ -102,7 +102,7 @@ void ClientContext::AddMetadata(const grpc::string& meta_key,
 }
 
 void ClientContext::set_call(
-    grpc_call* call, const std::shared_ptr<::grpc_impl::Channel>& channel) {
+    grpc_call* call, const std::shared_ptr< ::grpc_impl::Channel>& channel) {
   grpc::internal::MutexLock lock(&mu_);
   GPR_ASSERT(call_ == nullptr);
   call_ = call;

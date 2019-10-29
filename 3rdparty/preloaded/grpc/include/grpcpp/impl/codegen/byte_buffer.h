@@ -40,7 +40,7 @@ template <class ServiceType, class RequestType, class ResponseType>
 class RpcMethodHandler;
 template <class ServiceType, class RequestType, class ResponseType>
 class ServerStreamingHandler;
-template <::grpc::StatusCode code>
+template < ::grpc::StatusCode code>
 class ErrorMethodHandler;
 
 }  // namespace internal

@@ -34,7 +34,7 @@ grpc_tls_key_materials_config* ConvertToCKeyMaterialsConfig(
   }
   grpc_tls_key_materials_config* c_config =
       grpc_tls_key_materials_config_create();
-  ::grpc_core::InlinedVector<::grpc_core::PemKeyCertPair, 1>
+  ::grpc_core::InlinedVector< ::grpc_core::PemKeyCertPair, 1>
       c_pem_key_cert_pair_list;
   for (const auto& key_cert_pair : config->pem_key_cert_pair_list()) {
     grpc_ssl_pem_key_cert_pair* ssl_pair =

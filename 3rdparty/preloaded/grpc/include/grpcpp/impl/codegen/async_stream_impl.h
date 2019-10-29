@@ -283,16 +283,16 @@ class ClientAsyncReader final : public ClientAsyncReaderInterface<R> {
   ::grpc_impl::ClientContext* context_;
   ::grpc::internal::Call call_;
   bool started_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpClientSendClose>
       init_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata>
       meta_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata,
                               ::grpc::internal::CallOpRecvMessage<R>>
       read_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata,
                               ::grpc::internal::CallOpClientRecvStatus>
       finish_ops_;
 };
@@ -453,13 +453,13 @@ class ClientAsyncWriter final : public ClientAsyncWriterInterface<W> {
   ::grpc_impl::ClientContext* context_;
   ::grpc::internal::Call call_;
   bool started_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata>
       meta_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpClientSendClose>
       write_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata,
                               ::grpc::internal::CallOpGenericRecvMessage,
                               ::grpc::internal::CallOpClientRecvStatus>
       finish_ops_;
@@ -625,16 +625,16 @@ class ClientAsyncReaderWriter final
   ::grpc_impl::ClientContext* context_;
   ::grpc::internal::Call call_;
   bool started_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata>
       meta_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata,
                               ::grpc::internal::CallOpRecvMessage<R>>
       read_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpClientSendClose>
       write_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvInitialMetadata,
                               ::grpc::internal::CallOpClientRecvStatus>
       finish_ops_;
 };
@@ -786,10 +786,10 @@ class ServerAsyncReader final : public ServerAsyncReaderInterface<W, R> {
 
   ::grpc::internal::Call call_;
   ::grpc_impl::ServerContext* ctx_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata>
       meta_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvMessage<R>> read_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvMessage<R>> read_ops_;
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpServerSendStatus>
       finish_ops_;
@@ -944,13 +944,13 @@ class ServerAsyncWriter final : public ServerAsyncWriterInterface<W> {
 
   ::grpc::internal::Call call_;
   ::grpc_impl::ServerContext* ctx_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata>
       meta_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpServerSendStatus>
       write_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpServerSendStatus>
       finish_ops_;
 };
@@ -1118,14 +1118,14 @@ class ServerAsyncReaderWriter final
 
   ::grpc::internal::Call call_;
   ::grpc_impl::ServerContext* ctx_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata>
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata>
       meta_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpRecvMessage<R>> read_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpRecvMessage<R>> read_ops_;
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpSendMessage,
                               ::grpc::internal::CallOpServerSendStatus>
       write_ops_;
-  ::grpc::internal::CallOpSet<::grpc::internal::CallOpSendInitialMetadata,
+  ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                               ::grpc::internal::CallOpServerSendStatus>
       finish_ops_;
 };
