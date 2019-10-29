@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.5.1) # Minimal version for gRPC
 
+include(check_cxx11_features.cmake)
+
 set(pfs_grpc_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 set(pfs_grpc_BINARY_DIR "${CMAKE_BINARY_DIR}/pfs-grpc")
 
