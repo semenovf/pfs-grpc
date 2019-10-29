@@ -227,7 +227,7 @@ template <typename Child, typename Impl = PolymorphicRefCount>
 class RefCounted : public Impl {
  public:
   // Note: Depending on the Impl used, this dtor can be implicitly virtual.
-  ~RefCounted() = default;
+  virtual ~RefCounted() = default;
 
   RefCountedPtr<Child> Ref() GRPC_MUST_USE_RESULT {
     IncrementRefCount();
