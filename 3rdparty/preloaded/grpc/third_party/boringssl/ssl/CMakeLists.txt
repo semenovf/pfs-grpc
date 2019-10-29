@@ -44,6 +44,8 @@ add_library(
 
 target_link_libraries(ssl crypto)
 
+target_compile_options(ssl "-Wno-error=sign-compare")
+
 # --wladt--
 # add_executable(
 #   ssl_test
