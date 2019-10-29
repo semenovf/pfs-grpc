@@ -34,7 +34,7 @@ struct is_trivially_destructible : public std::__and_<std::is_destructible<T>
 
 namespace std {
 
-#if HAVE_NOT_is_trivially_destructible
+#if PFS_HAVE_NOT_is_trivially_destructible
 
 template <typename T>
 using is_trivially_destructible = pfs::is_trivially_destructible;
