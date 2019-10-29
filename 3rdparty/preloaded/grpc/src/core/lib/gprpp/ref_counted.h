@@ -232,7 +232,12 @@ template <typename Child, typename Impl = PolymorphicRefCount>
 class RefCounted : public Impl {
  public:
   // Note: Depending on the Impl used, this dtor can be implicitly virtual.
-  virtual ~RefCounted() = default;
+  // --wladt--
+  // Replaced '= default' to '{}' to
+  // disable error: looser throw specifier for ...
+  // ... overriding ‘grpc_core::RefCounted<Child, Impl>::~RefCounted() noexcept (true)
+  // (g++ 4.7.2)
+  virtual ~RefCounted() {} // = default;
 
   RefCountedPtr<Child> Ref() GRPC_MUST_USE_RESULT {
     IncrementRefCount();
