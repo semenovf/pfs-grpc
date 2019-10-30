@@ -86,7 +86,7 @@ SslSessionLRUCache::SslSessionLRUCache(size_t capacity) : capacity_(capacity) {
   entry_by_key_ = grpc_avl_create(&cache_avl_vtable);
 }
 
-SslSessionLRUCache::~SslSessionLRUCache() {
+SslSessionLRUCache::~SslSessionLRUCache() noexcept {
   Node* node = use_order_list_head_;
   while (node) {
     Node* next = node->next_;

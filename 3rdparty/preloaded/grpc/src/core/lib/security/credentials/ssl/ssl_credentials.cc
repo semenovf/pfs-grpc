@@ -51,7 +51,7 @@ grpc_ssl_credentials::grpc_ssl_credentials(
   build_config(pem_root_certs, pem_key_cert_pair, verify_options);
 }
 
-grpc_ssl_credentials::~grpc_ssl_credentials() {
+grpc_ssl_credentials::~grpc_ssl_credentials() noexcept {
   gpr_free(config_.pem_root_certs);
   grpc_tsi_ssl_pem_key_cert_pairs_destroy(config_.pem_key_cert_pair, 1);
   if (config_.verify_options.verify_peer_destruct != nullptr) {
@@ -174,7 +174,7 @@ grpc_ssl_server_credentials::grpc_ssl_server_credentials(
   }
 }
 
-grpc_ssl_server_credentials::~grpc_ssl_server_credentials() {
+grpc_ssl_server_credentials::~grpc_ssl_server_credentials() noexcept {
   grpc_tsi_ssl_pem_key_cert_pairs_destroy(config_.pem_key_cert_pairs,
                                           config_.num_key_cert_pairs);
   gpr_free(config_.pem_root_certs);

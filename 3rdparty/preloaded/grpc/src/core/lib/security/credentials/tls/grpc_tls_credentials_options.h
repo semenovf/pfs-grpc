@@ -34,6 +34,8 @@ struct grpc_tls_key_materials_config
   typedef grpc_core::InlinedVector<grpc_core::PemKeyCertPair, 1>
       PemKeyCertPairList;
 
+  virtual ~grpc_tls_key_materials_config () noexcept override {};
+
   /** Getters for member fields. **/
   const char* pem_root_certs() const { return pem_root_certs_.get(); }
   const PemKeyCertPairList& pem_key_cert_pair_list() const {
@@ -69,7 +71,7 @@ struct grpc_tls_credential_reload_config
       void (*cancel)(void* config_user_data,
                      grpc_tls_credential_reload_arg* arg),
       void (*destruct)(void* config_user_data));
-  ~grpc_tls_credential_reload_config();
+  ~grpc_tls_credential_reload_config() noexcept;
 
   void* context() const { return context_; }
   void set_context(void* context) { context_ = context; }
@@ -145,7 +147,7 @@ struct grpc_tls_server_authorization_check_config
       void (*cancel)(void* config_user_data,
                      grpc_tls_server_authorization_check_arg* arg),
       void (*destruct)(void* config_user_data));
-  ~grpc_tls_server_authorization_check_config();
+  ~grpc_tls_server_authorization_check_config() noexcept;
 
   void* context() const { return context_; }
   void set_context(void* context) { context_ = context; }
@@ -218,7 +220,7 @@ struct grpc_tls_server_authorization_check_config
 struct grpc_tls_credentials_options
     : public grpc_core::RefCounted<grpc_tls_credentials_options> {
  public:
-  ~grpc_tls_credentials_options() {
+  ~grpc_tls_credentials_options() noexcept {
     if (key_materials_config_.get() != nullptr) {
       key_materials_config_.get()->Unref();
     }

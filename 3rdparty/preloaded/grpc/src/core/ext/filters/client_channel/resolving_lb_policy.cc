@@ -113,6 +113,8 @@ class ResolvingLoadBalancingPolicy::ResolvingControlHelper
     return parent_->channel_control_helper()->CreateSubchannel(args);
   }
 
+  ~ResolvingControlHelper () noexcept override {};
+
   void UpdateState(grpc_connectivity_state state,
                    UniquePtr<SubchannelPicker> picker) override {
     if (parent_->resolver_ == nullptr) return;  // Shutting down.

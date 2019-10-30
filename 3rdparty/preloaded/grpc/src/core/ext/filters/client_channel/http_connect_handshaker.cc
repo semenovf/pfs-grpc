@@ -52,7 +52,7 @@ class HttpConnectHandshaker : public Handshaker {
   const char* name() const override { return "http_connect"; }
 
  private:
-  virtual ~HttpConnectHandshaker();
+  virtual ~HttpConnectHandshaker() noexcept;
   void CleanupArgsForFailureLocked();
   void HandshakeFailedLocked(grpc_error* error);
   static void OnWriteDone(void* arg, grpc_error* error);
@@ -77,7 +77,7 @@ class HttpConnectHandshaker : public Handshaker {
   grpc_http_response http_response_;
 };
 
-HttpConnectHandshaker::~HttpConnectHandshaker() {
+HttpConnectHandshaker::~HttpConnectHandshaker() noexcept {
   gpr_mu_destroy(&mu_);
   if (endpoint_to_destroy_ != nullptr) {
     grpc_endpoint_destroy(endpoint_to_destroy_);
@@ -345,7 +345,7 @@ class HttpConnectHandshakerFactory : public HandshakerFactory {
                       HandshakeManager* handshake_mgr) override {
     handshake_mgr->Add(MakeRefCounted<HttpConnectHandshaker>());
   }
-  ~HttpConnectHandshakerFactory() override = default;
+  ~HttpConnectHandshakerFactory() noexcept override = default;
 };
 
 }  // namespace

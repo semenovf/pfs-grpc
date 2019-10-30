@@ -35,7 +35,7 @@
 
 grpc_core::TraceFlag grpc_plugin_credentials_trace(false, "plugin_credentials");
 
-grpc_plugin_credentials::~grpc_plugin_credentials() {
+grpc_plugin_credentials::~grpc_plugin_credentials() noexcept {
   gpr_mu_destroy(&mu_);
   if (plugin_.state != nullptr && plugin_.destroy != nullptr) {
     plugin_.destroy(plugin_.state);

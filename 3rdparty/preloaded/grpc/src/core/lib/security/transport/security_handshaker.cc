@@ -49,7 +49,7 @@ class SecurityHandshaker : public Handshaker {
   SecurityHandshaker(tsi_handshaker* handshaker,
                      grpc_security_connector* connector,
                      const grpc_channel_args* args);
-  ~SecurityHandshaker() override;
+  ~SecurityHandshaker() noexcept override;
   void Shutdown(grpc_error* why) override;
   void DoHandshake(grpc_tcp_server_acceptor* acceptor,
                    grpc_closure* on_handshake_done,
@@ -128,7 +128,7 @@ SecurityHandshaker::SecurityHandshaker(tsi_handshaker* handshaker,
                     this, grpc_schedule_on_exec_ctx);
 }
 
-SecurityHandshaker::~SecurityHandshaker() {
+SecurityHandshaker::~SecurityHandshaker() noexcept {
   gpr_mu_destroy(&mu_);
   tsi_handshaker_destroy(handshaker_);
   tsi_handshaker_result_destroy(handshaker_result_);
@@ -455,7 +455,7 @@ class FailHandshaker : public Handshaker {
   }
 
  private:
-  virtual ~FailHandshaker() = default;
+  virtual ~FailHandshaker() noexcept = default;
 };
 
 //
@@ -475,7 +475,7 @@ class ClientSecurityHandshakerFactory : public HandshakerFactory {
                                           handshake_mgr);
     }
   }
-  ~ClientSecurityHandshakerFactory() override = default;
+  ~ClientSecurityHandshakerFactory() noexcept override = default;
 };
 
 class ServerSecurityHandshakerFactory : public HandshakerFactory {
@@ -491,7 +491,7 @@ class ServerSecurityHandshakerFactory : public HandshakerFactory {
                                           handshake_mgr);
     }
   }
-  ~ServerSecurityHandshakerFactory() override = default;
+  ~ServerSecurityHandshakerFactory() noexcept override = default;
 };
 
 }  // namespace

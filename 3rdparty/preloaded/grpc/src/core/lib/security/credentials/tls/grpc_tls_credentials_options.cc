@@ -47,7 +47,7 @@ grpc_tls_credential_reload_config::grpc_tls_credential_reload_config(
       cancel_(cancel),
       destruct_(destruct) {}
 
-grpc_tls_credential_reload_config::~grpc_tls_credential_reload_config() {
+grpc_tls_credential_reload_config::~grpc_tls_credential_reload_config() noexcept {
   if (destruct_ != nullptr) {
     destruct_((void*)config_user_data_);
   }
@@ -68,7 +68,7 @@ grpc_tls_server_authorization_check_config::
       destruct_(destruct) {}
 
 grpc_tls_server_authorization_check_config::
-    ~grpc_tls_server_authorization_check_config() {
+    ~grpc_tls_server_authorization_check_config() noexcept {
   if (destruct_ != nullptr) {
     destruct_((void*)config_user_data_);
   }

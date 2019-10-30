@@ -37,7 +37,7 @@ SubchannelNode::SubchannelNode(const char* target_address,
       target_(UniquePtr<char>(gpr_strdup(target_address))),
       trace_(channel_tracer_max_nodes) {}
 
-SubchannelNode::~SubchannelNode() {}
+SubchannelNode::~SubchannelNode() noexcept {}
 
 void SubchannelNode::UpdateConnectivityState(grpc_connectivity_state state) {
   connectivity_state_.Store(state, MemoryOrder::RELAXED);

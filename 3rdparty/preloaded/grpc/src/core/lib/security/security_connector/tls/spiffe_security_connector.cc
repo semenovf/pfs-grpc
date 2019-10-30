@@ -130,7 +130,7 @@ SpiffeChannelSecurityConnector::SpiffeChannelSecurityConnector(
   target_name_ = host.dup();
 }
 
-SpiffeChannelSecurityConnector::~SpiffeChannelSecurityConnector() {
+SpiffeChannelSecurityConnector::~SpiffeChannelSecurityConnector() noexcept {
   if (client_handshaker_factory_ != nullptr) {
     tsi_ssl_client_handshaker_factory_unref(client_handshaker_factory_);
   }
@@ -409,7 +409,7 @@ SpiffeServerSecurityConnector::SpiffeServerSecurityConnector(
   key_materials_config_ = grpc_tls_key_materials_config_create()->Ref();
 }
 
-SpiffeServerSecurityConnector::~SpiffeServerSecurityConnector() {
+SpiffeServerSecurityConnector::~SpiffeServerSecurityConnector() noexcept {
   if (server_handshaker_factory_ != nullptr) {
     tsi_ssl_server_handshaker_factory_unref(server_handshaker_factory_);
   }

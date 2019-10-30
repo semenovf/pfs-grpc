@@ -90,7 +90,7 @@ ConnectedSubchannel::ConnectedSubchannel(
       args_(grpc_channel_args_copy(args)),
       channelz_subchannel_(std::move(channelz_subchannel)) {}
 
-ConnectedSubchannel::~ConnectedSubchannel() {
+ConnectedSubchannel::~ConnectedSubchannel() noexcept {
   grpc_channel_args_destroy(args_);
   GRPC_CHANNEL_STACK_UNREF(channel_stack_, "connected_subchannel_dtor");
 }

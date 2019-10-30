@@ -32,6 +32,8 @@ namespace grpc_core {
 
 class GrpcLbClientStats : public RefCounted<GrpcLbClientStats> {
  public:
+    ~GrpcLbClientStats() noexcept override {};
+
   struct DropTokenCount {
     UniquePtr<char> token;
     int64_t count;

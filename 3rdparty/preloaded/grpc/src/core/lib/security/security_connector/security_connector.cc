@@ -54,7 +54,7 @@ grpc_channel_security_connector::grpc_channel_security_connector(
       channel_creds_(std::move(channel_creds)),
       request_metadata_creds_(std::move(request_metadata_creds)) {}
 
-grpc_channel_security_connector::~grpc_channel_security_connector() {}
+grpc_channel_security_connector::~grpc_channel_security_connector() noexcept {}
 
 int grpc_security_connector_cmp(const grpc_security_connector* sc,
                                 const grpc_security_connector* other) {
@@ -72,6 +72,9 @@ int grpc_channel_security_connector::channel_security_connector_cmp(
   if (c != 0) return c;
   return GPR_ICMP(request_metadata_creds(), other_sc->request_metadata_creds());
 }
+
+grpc_server_security_connector::~grpc_server_security_connector() noexcept = default;
+// {}
 
 int grpc_server_security_connector::server_security_connector_cmp(
     const grpc_server_security_connector* other) const {

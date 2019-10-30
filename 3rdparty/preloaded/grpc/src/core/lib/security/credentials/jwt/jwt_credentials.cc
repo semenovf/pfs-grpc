@@ -43,7 +43,7 @@ void grpc_service_account_jwt_access_credentials::reset_cache() {
 }
 
 grpc_service_account_jwt_access_credentials::
-    ~grpc_service_account_jwt_access_credentials() {
+    ~grpc_service_account_jwt_access_credentials() noexcept {
   grpc_auth_json_key_destruct(&key_);
   reset_cache();
   gpr_mu_destroy(&cache_mu_);

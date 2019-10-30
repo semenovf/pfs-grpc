@@ -105,7 +105,7 @@ void HandshakeManager::Add(RefCountedPtr<Handshaker> handshaker) {
   handshakers_.push_back(std::move(handshaker));
 }
 
-HandshakeManager::~HandshakeManager() {
+HandshakeManager::~HandshakeManager() noexcept {
   handshakers_.clear();
   gpr_mu_destroy(&mu_);
 }

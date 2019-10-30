@@ -76,7 +76,7 @@ struct HandshakerArgs {
 
 class Handshaker : public RefCounted<Handshaker> {
  public:
-  virtual ~Handshaker() = default;
+  virtual ~Handshaker() noexcept = default;
   virtual void Shutdown(grpc_error* why) = 0;
   virtual void DoHandshake(grpc_tcp_server_acceptor* acceptor,
                            grpc_closure* on_handshake_done,
@@ -91,7 +91,7 @@ class Handshaker : public RefCounted<Handshaker> {
 class HandshakeManager : public RefCounted<HandshakeManager> {
  public:
   HandshakeManager();
-  ~HandshakeManager();
+  ~HandshakeManager() noexcept;
 
   /// Add \a mgr to the server side list of all pending handshake managers, the
   /// list starts with \a *head.

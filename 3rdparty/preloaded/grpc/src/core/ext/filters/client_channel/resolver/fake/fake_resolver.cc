@@ -172,7 +172,7 @@ void FakeResolver::ReturnReresolutionResult(void* arg, grpc_error* error) {
 
 FakeResolverResponseGenerator::FakeResolverResponseGenerator() {}
 
-FakeResolverResponseGenerator::~FakeResolverResponseGenerator() {}
+FakeResolverResponseGenerator::~FakeResolverResponseGenerator() noexcept {}
 
 struct SetResponseClosureArg {
   grpc_closure set_response_closure;

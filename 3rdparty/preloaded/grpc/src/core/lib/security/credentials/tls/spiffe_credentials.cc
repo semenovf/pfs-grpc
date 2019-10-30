@@ -63,7 +63,7 @@ SpiffeCredentials::SpiffeCredentials(
     : grpc_channel_credentials(GRPC_CREDENTIALS_TYPE_SPIFFE),
       options_(std::move(options)) {}
 
-SpiffeCredentials::~SpiffeCredentials() {}
+SpiffeCredentials::~SpiffeCredentials() noexcept {}
 
 grpc_core::RefCountedPtr<grpc_channel_security_connector>
 SpiffeCredentials::create_security_connector(
@@ -102,7 +102,7 @@ SpiffeServerCredentials::SpiffeServerCredentials(
     : grpc_server_credentials(GRPC_CREDENTIALS_TYPE_SPIFFE),
       options_(std::move(options)) {}
 
-SpiffeServerCredentials::~SpiffeServerCredentials() {}
+SpiffeServerCredentials::~SpiffeServerCredentials() noexcept {}
 
 grpc_core::RefCountedPtr<grpc_server_security_connector>
 SpiffeServerCredentials::create_security_connector() {

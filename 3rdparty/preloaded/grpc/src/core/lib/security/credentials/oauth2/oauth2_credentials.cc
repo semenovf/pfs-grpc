@@ -119,7 +119,7 @@ void grpc_auth_refresh_token_destruct(grpc_auth_refresh_token* refresh_token) {
 //
 
 grpc_oauth2_token_fetcher_credentials::
-    ~grpc_oauth2_token_fetcher_credentials() {
+    ~grpc_oauth2_token_fetcher_credentials() noexcept {
   GRPC_MDELEM_UNREF(access_token_md_);
   gpr_mu_destroy(&mu_);
   grpc_pollset_set_destroy(grpc_polling_entity_pollset_set(&pollent_));
@@ -363,7 +363,7 @@ class grpc_compute_engine_token_fetcher_credentials
     : public grpc_oauth2_token_fetcher_credentials {
  public:
   grpc_compute_engine_token_fetcher_credentials() = default;
-  ~grpc_compute_engine_token_fetcher_credentials() override = default;
+  ~grpc_compute_engine_token_fetcher_credentials() noexcept override = default;
 
  protected:
   void fetch_oauth2(grpc_credentials_metadata_request* metadata_req,
@@ -412,7 +412,7 @@ grpc_call_credentials* grpc_google_compute_engine_credentials_create(
 //
 
 grpc_google_refresh_token_credentials::
-    ~grpc_google_refresh_token_credentials() {
+    ~grpc_google_refresh_token_credentials() noexcept {
   grpc_auth_refresh_token_destruct(&refresh_token_);
 }
 
@@ -533,7 +533,7 @@ class StsTokenFetcherCredentials
         actor_token_path_(gpr_strdup(options->actor_token_path)),
         actor_token_type_(gpr_strdup(options->actor_token_type)) {}
 
-  ~StsTokenFetcherCredentials() override { grpc_uri_destroy(sts_url_); }
+  ~StsTokenFetcherCredentials() noexcept override { grpc_uri_destroy(sts_url_); }
 
  private:
   void fetch_oauth2(grpc_credentials_metadata_request* metadata_req,
@@ -697,7 +697,7 @@ grpc_call_credentials* grpc_sts_credentials_create(
 // Oauth2 Access Token credentials.
 //
 
-grpc_access_token_credentials::~grpc_access_token_credentials() {
+grpc_access_token_credentials::~grpc_access_token_credentials() noexcept {
   GRPC_MDELEM_UNREF(access_token_md_);
 }
 

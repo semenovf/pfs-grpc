@@ -35,8 +35,25 @@
 
 namespace grpc_core {
 
+#if PFS_HAVE_NOT_map_emplace
+template <class Key, class T, class Compare = std::less<Key>>
+class Map : public std::map<Key, T, Compare, Allocator<std::pair<const Key, T>>>
+{
+public:
+    using base_class = std::map<Key, T, Compare, Allocator<std::pair<const Key, T>>>;
+    using iterator = typename base_class::iterator;
+public:
+    std::pair<iterator,bool> emplace (Key && key, T && value)
+    {
+        return this->insert(std::make_pair(std::forward<Key>(key), std::forward<T>(value)));
+//         return this->insert(std::make_pair(key, value));
+    }
+};
+
+#else
 template <class Key, class T, class Compare = std::less<Key>>
 using Map = std::map<Key, T, Compare, Allocator<std::pair<const Key, T>>>;
+#endif
 
 struct StringLess {
   bool operator()(const char* a, const char* b) const {

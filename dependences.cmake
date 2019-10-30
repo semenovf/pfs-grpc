@@ -8,7 +8,7 @@ set(pfs_grpc_BINARY_DIR "${CMAKE_BINARY_DIR}/pfs-grpc")
 
 # Submodules downloaded (allow use of last version of gRPC library and
 # it's dependences)
-if (EXISTS "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc/CMakeLists.txt")
+if (EXISTS "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc1/CMakeLists.txt")
     set(pfs_grpc_GRPC_SOURCE_DIR "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc")
     set(pfs_grpc_GRPC_BINARY_SUBDIR "pfs-grpc/3rdparty/grpc")
 else()

@@ -54,6 +54,8 @@ class ClientChannelGlobalParsedConfig : public ServiceConfig::ParsedConfig {
         retry_throttling_(retry_throttling),
         health_check_service_name_(health_check_service_name) {}
 
+    ~ClientChannelGlobalParsedConfig() noexcept;
+
   Optional<RetryThrottling> retry_throttling() const {
     return retry_throttling_;
   }

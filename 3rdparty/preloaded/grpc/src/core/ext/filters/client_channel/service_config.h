@@ -124,7 +124,7 @@ class ServiceConfig : public RefCounted<ServiceConfig> {
   static RefCountedPtr<ServiceConfig> Create(const char* json,
                                              grpc_error** error);
 
-  ~ServiceConfig();
+  ~ServiceConfig() noexcept;
 
   const char* service_config_json() const { return service_config_json_.get(); }
 

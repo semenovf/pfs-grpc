@@ -61,7 +61,7 @@ struct grpc_auth_context
     }
   }
 
-  ~grpc_auth_context() {
+  ~grpc_auth_context() noexcept {
     chained_.reset(DEBUG_LOCATION, "chained");
     if (properties_.array != nullptr) {
       for (size_t i = 0; i < properties_.count; i++) {

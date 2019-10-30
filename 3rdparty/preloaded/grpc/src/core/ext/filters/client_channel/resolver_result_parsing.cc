@@ -48,6 +48,8 @@ namespace {
 size_t g_client_channel_service_config_parser_index;
 }
 
+ClientChannelGlobalParsedConfig::~ClientChannelGlobalParsedConfig() noexcept = default;
+
 size_t ClientChannelServiceConfigParser::ParserIndex() {
   return g_client_channel_service_config_parser_index;
 }

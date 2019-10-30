@@ -63,7 +63,7 @@ class SubchannelKey {
 class SubchannelPoolInterface : public RefCounted<SubchannelPoolInterface> {
  public:
   SubchannelPoolInterface() : RefCounted(&grpc_subchannel_pool_trace) {}
-  virtual ~SubchannelPoolInterface() {}
+  virtual ~SubchannelPoolInterface() noexcept {}
 
   // Registers a subchannel against a key. Returns the subchannel registered
   // with \a key, which may be different from \a constructed because we reuse

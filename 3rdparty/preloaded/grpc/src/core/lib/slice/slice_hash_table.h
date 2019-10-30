@@ -67,7 +67,7 @@ class SliceHashTable : public RefCounted<SliceHashTable<T>> {
 
   // Use Create function instead of using this directly.
   SliceHashTable(size_t num_entries, Entry* entries, ValueCmp value_cmp);
-  virtual ~SliceHashTable();
+  virtual ~SliceHashTable() noexcept;
 
   /// Returns the value from the table associated with \a key.
   /// Returns null if \a key is not found.
@@ -119,7 +119,7 @@ SliceHashTable<T>::SliceHashTable(size_t num_entries, Entry* entries,
 }
 
 template <typename T>
-SliceHashTable<T>::~SliceHashTable() {
+SliceHashTable<T>::~SliceHashTable() noexcept {
   for (size_t i = 0; i < size_; ++i) {
     Entry& entry = entries_[i];
     if (entry.is_set) {

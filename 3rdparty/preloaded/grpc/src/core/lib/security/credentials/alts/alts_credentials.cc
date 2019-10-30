@@ -42,7 +42,7 @@ grpc_alts_credentials::grpc_alts_credentials(
                                   ? gpr_strdup(GRPC_ALTS_HANDSHAKER_SERVICE_URL)
                                   : gpr_strdup(handshaker_service_url)) {}
 
-grpc_alts_credentials::~grpc_alts_credentials() {
+grpc_alts_credentials::~grpc_alts_credentials() noexcept {
   grpc_alts_credentials_options_destroy(options_);
   gpr_free(handshaker_service_url_);
 }
@@ -70,7 +70,7 @@ grpc_alts_server_credentials::create_security_connector() {
   return grpc_alts_server_security_connector_create(this->Ref());
 }
 
-grpc_alts_server_credentials::~grpc_alts_server_credentials() {
+grpc_alts_server_credentials::~grpc_alts_server_credentials() noexcept {
   grpc_alts_credentials_options_destroy(options_);
   gpr_free(handshaker_service_url_);
 }

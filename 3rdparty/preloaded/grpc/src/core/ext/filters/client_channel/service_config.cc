@@ -212,7 +212,7 @@ grpc_error* ServiceConfig::ParsePerMethodParams(const grpc_json* json_tree) {
   return GRPC_ERROR_CREATE_FROM_VECTOR("Method Params", &error_list);
 }
 
-ServiceConfig::~ServiceConfig() { grpc_json_destroy(json_tree_); }
+ServiceConfig::~ServiceConfig() noexcept { grpc_json_destroy(json_tree_); }
 
 int ServiceConfig::CountNamesInMethodConfig(grpc_json* json) {
   int num_names = 0;

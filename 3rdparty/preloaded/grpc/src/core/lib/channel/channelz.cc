@@ -91,7 +91,7 @@ BaseNode::BaseNode(EntityType type, UniquePtr<char> name)
   ChannelzRegistry::Register(this);
 }
 
-BaseNode::~BaseNode() { ChannelzRegistry::Unregister(uuid_); }
+BaseNode::~BaseNode() noexcept { ChannelzRegistry::Unregister(uuid_); }
 
 char* BaseNode::RenderJsonString() {
   grpc_json* json = RenderJson();
@@ -319,7 +319,7 @@ ServerNode::ServerNode(grpc_server* server, size_t channel_tracer_max_nodes)
     : BaseNode(EntityType::kServer, /* name */ nullptr),
       trace_(channel_tracer_max_nodes) {}
 
-ServerNode::~ServerNode() {}
+ServerNode::~ServerNode() noexcept {}
 
 void ServerNode::AddChildSocket(RefCountedPtr<SocketNode> node) {
   MutexLock lock(&child_mu_);

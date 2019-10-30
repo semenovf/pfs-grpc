@@ -29,7 +29,7 @@ GlobalSubchannelPool::GlobalSubchannelPool() {
   gpr_mu_init(&mu_);
 }
 
-GlobalSubchannelPool::~GlobalSubchannelPool() {
+GlobalSubchannelPool::~GlobalSubchannelPool() noexcept {
   gpr_mu_destroy(&mu_);
   grpc_avl_unref(subchannel_map_, nullptr);
 }

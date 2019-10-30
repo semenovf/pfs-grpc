@@ -85,7 +85,7 @@ class BaseNode : public RefCounted<BaseNode> {
   BaseNode(EntityType type, UniquePtr<char> name);
 
  public:
-  virtual ~BaseNode();
+  virtual ~BaseNode() noexcept;
 
   // All children must implement this function.
   virtual grpc_json* RenderJson() = 0;
@@ -168,6 +168,8 @@ class ChannelNode : public BaseNode {
   ChannelNode(UniquePtr<char> target, size_t channel_tracer_max_nodes,
               intptr_t parent_uuid);
 
+  virtual ~ChannelNode () noexcept {};
+
   // Returns the string description of the given connectivity state.
   static const char* GetChannelConnectivityStateChangeString(
       grpc_connectivity_state state);
@@ -230,7 +232,7 @@ class ServerNode : public BaseNode {
  public:
   ServerNode(grpc_server* server, size_t channel_tracer_max_nodes);
 
-  ~ServerNode() override;
+  ~ServerNode() noexcept override;
 
   grpc_json* RenderJson() override;
 
@@ -271,7 +273,7 @@ class SocketNode : public BaseNode {
  public:
   SocketNode(UniquePtr<char> local, UniquePtr<char> remote,
              UniquePtr<char> name);
-  ~SocketNode() override {}
+  ~SocketNode() noexcept override {}
 
   grpc_json* RenderJson() override;
 
@@ -310,7 +312,7 @@ class SocketNode : public BaseNode {
 class ListenSocketNode : public BaseNode {
  public:
   ListenSocketNode(UniquePtr<char> local_addr, UniquePtr<char> name);
-  ~ListenSocketNode() override {}
+  ~ListenSocketNode() noexcept override {}
 
   grpc_json* RenderJson() override;
 

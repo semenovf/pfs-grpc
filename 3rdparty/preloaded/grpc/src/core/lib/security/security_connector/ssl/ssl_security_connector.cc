@@ -82,7 +82,7 @@ class grpc_ssl_channel_security_connector final
     target_name_ = host.dup();
   }
 
-  ~grpc_ssl_channel_security_connector() override {
+  ~grpc_ssl_channel_security_connector() noexcept override {
     tsi_ssl_client_handshaker_factory_unref(client_handshaker_factory_);
   }
 
@@ -227,7 +227,7 @@ class grpc_ssl_server_security_connector
       : grpc_server_security_connector(GRPC_SSL_URL_SCHEME,
                                        std::move(server_creds)) {}
 
-  ~grpc_ssl_server_security_connector() override {
+  ~grpc_ssl_server_security_connector() noexcept override {
     tsi_ssl_server_handshaker_factory_unref(server_handshaker_factory_);
   }
 

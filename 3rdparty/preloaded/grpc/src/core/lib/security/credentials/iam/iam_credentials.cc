@@ -30,7 +30,7 @@
 #include <grpc/support/string_util.h>
 #include <grpc/support/sync.h>
 
-grpc_google_iam_credentials::~grpc_google_iam_credentials() {
+grpc_google_iam_credentials::~grpc_google_iam_credentials() noexcept {
   grpc_credentials_mdelem_array_destroy(&md_array_);
 }
 

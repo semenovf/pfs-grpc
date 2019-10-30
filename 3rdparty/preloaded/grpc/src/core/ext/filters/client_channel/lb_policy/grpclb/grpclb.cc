@@ -128,6 +128,8 @@ class ParsedGrpcLbConfig : public LoadBalancingPolicy::Config {
       : child_policy_(std::move(child_policy)) {}
   const char* name() const override { return kGrpclb; }
 
+  ~ParsedGrpcLbConfig () noexcept override {};
+
   RefCountedPtr<LoadBalancingPolicy::Config> child_policy() const {
     return child_policy_;
   }
@@ -230,7 +232,7 @@ class GrpcLb : public LoadBalancingPolicy {
     explicit Serverlist(grpc_grpclb_serverlist* serverlist)
         : serverlist_(serverlist) {}
 
-    ~Serverlist() { grpc_grpclb_destroy_serverlist(serverlist_); }
+    ~Serverlist() noexcept { grpc_grpclb_destroy_serverlist(serverlist_); }
 
     bool operator==(const Serverlist& other) const;
 
@@ -275,6 +277,8 @@ class GrpcLb : public LoadBalancingPolicy {
           child_picker_(std::move(child_picker)),
           client_stats_(std::move(client_stats)) {}
 
+    ~Picker() noexcept override {}
+
     PickResult Pick(PickArgs args) override;
 
    private:
@@ -293,6 +297,8 @@ class GrpcLb : public LoadBalancingPolicy {
    public:
     explicit Helper(RefCountedPtr<GrpcLb> parent)
         : parent_(std::move(parent)) {}
+
+    ~Helper() noexcept override {}
 
     RefCountedPtr<SubchannelInterface> CreateSubchannel(
         const grpc_channel_args& args) override;

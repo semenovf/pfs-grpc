@@ -93,6 +93,7 @@ class XdsClientStats {
  public:
   class LocalityStats : public RefCounted<LocalityStats> {
    public:
+    ~LocalityStats() noexcept override {}
     class LoadMetric {
      public:
       struct Snapshot {

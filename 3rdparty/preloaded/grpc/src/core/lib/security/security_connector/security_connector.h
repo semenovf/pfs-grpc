@@ -51,7 +51,7 @@ class grpc_security_connector
       : grpc_core::RefCounted<grpc_security_connector>(
             &grpc_trace_security_connector_refcount),
         url_scheme_(url_scheme) {}
-  virtual ~grpc_security_connector() = default;
+  virtual ~grpc_security_connector() noexcept = default;
 
   /* Check the peer. Callee takes ownership of the peer object.
      When done, sets *auth_context and invokes on_peer_checked. */
@@ -92,7 +92,7 @@ class grpc_channel_security_connector : public grpc_security_connector {
       grpc_core::RefCountedPtr<grpc_call_credentials> request_metadata_creds
       /*,
       grpc_channel_args* channel_args = nullptr*/);
-  ~grpc_channel_security_connector() override;
+  ~grpc_channel_security_connector() noexcept override;
 
   /// Checks that the host that will be set for a call is acceptable.
   /// Returns true if completed synchronously, in which case \a error will
@@ -151,7 +151,7 @@ class grpc_server_security_connector : public grpc_security_connector {
   grpc_server_security_connector(
       const char* url_scheme,
       grpc_core::RefCountedPtr<grpc_server_credentials> server_creds);
-  ~grpc_server_security_connector() override = default;
+  virtual ~grpc_server_security_connector() noexcept;
 
   virtual void add_handshakers(const grpc_channel_args* args,
                                grpc_pollset_set* interested_parties,

@@ -857,14 +857,19 @@ class ChannelData::SubchannelWrapper : public SubchannelInterface {
       auto it = chand_->subchannel_refcount_map_.find(subchannel_);
       if (it == chand_->subchannel_refcount_map_.end()) {
         chand_->channelz_node_->AddChildSubchannel(subchannel_node->uuid());
+#if PFS_HAVE_NOT_map_emplace
+        Subchannel * xsubchannel{subchannel_};
+        it = chand_->subchannel_refcount_map_.emplace(std::move(xsubchannel), 0).first;
+#else
         it = chand_->subchannel_refcount_map_.emplace(subchannel_, 0).first;
+#endif
       }
       ++it->second;
     }
     chand_->subchannel_wrappers_.insert(this);
   }
 
-  ~SubchannelWrapper() {
+  ~SubchannelWrapper() noexcept {
     if (GRPC_TRACE_FLAG_ENABLED(grpc_client_channel_routing_trace)) {
       gpr_log(GPR_INFO,
               "chand=%p: destroying subchannel wrapper %p for subchannel %p",
@@ -1287,7 +1292,7 @@ class ChannelData::ClientChannelControlHelper
     GRPC_CHANNEL_STACK_REF(chand_->owning_stack_, "ClientChannelControlHelper");
   }
 
-  ~ClientChannelControlHelper() override {
+  ~ClientChannelControlHelper() noexcept override {
     GRPC_CHANNEL_STACK_UNREF(chand_->owning_stack_,
                              "ClientChannelControlHelper");
   }

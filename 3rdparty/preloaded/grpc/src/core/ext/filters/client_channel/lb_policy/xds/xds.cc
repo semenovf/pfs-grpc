@@ -86,6 +86,7 @@ class ParsedXdsConfig : public LoadBalancingPolicy::Config {
         lrs_load_reporting_server_name_(
             std::move(lrs_load_reporting_server_name)) {}
 
+  ~ParsedXdsConfig () noexcept override {}
   const char* name() const override { return kXds; }
 
   RefCountedPtr<LoadBalancingPolicy::Config> child_policy() const {
@@ -134,7 +135,7 @@ class XdsLb : public LoadBalancingPolicy {
           locality_stats_(std::move(locality_stats)) {
       locality_stats_->RefByPicker();
     }
-    ~EndpointPickerWrapper() { locality_stats_->UnrefByPicker(); }
+    ~EndpointPickerWrapper() noexcept override { locality_stats_->UnrefByPicker(); }
 
     PickResult Pick(PickArgs args);
 
@@ -159,6 +160,8 @@ class XdsLb : public LoadBalancingPolicy {
           pickers_(std::move(pickers)),
           drop_config_(xds_policy_->drop_config_) {}
 
+    ~LocalityPicker() noexcept override {}
+
     PickResult Pick(PickArgs args) override;
 
    private:
@@ -175,7 +178,7 @@ class XdsLb : public LoadBalancingPolicy {
     explicit FallbackHelper(RefCountedPtr<XdsLb> parent)
         : parent_(std::move(parent)) {}
 
-    ~FallbackHelper() { parent_.reset(DEBUG_LOCATION, "FallbackHelper"); }
+    ~FallbackHelper() noexcept override { parent_.reset(DEBUG_LOCATION, "FallbackHelper"); }
 
     RefCountedPtr<SubchannelInterface> CreateSubchannel(
         const grpc_channel_args& args) override;
@@ -233,7 +236,7 @@ class XdsLb : public LoadBalancingPolicy {
           explicit Helper(RefCountedPtr<Locality> locality)
               : locality_(std::move(locality)) {}
 
-          ~Helper() { locality_.reset(DEBUG_LOCATION, "Helper"); }
+          ~Helper() noexcept override { locality_.reset(DEBUG_LOCATION, "Helper"); }
 
           RefCountedPtr<SubchannelInterface> CreateSubchannel(
               const grpc_channel_args& args) override;
@@ -610,6 +613,8 @@ class XdsLb::EndpointWatcher : public XdsClient::EndpointWatcherInterface {
  public:
   explicit EndpointWatcher(RefCountedPtr<XdsLb> xds_policy)
       : xds_policy_(std::move(xds_policy)) {}
+
+  ~EndpointWatcher() noexcept override {}
 
   void OnEndpointChanged(EdsUpdate update) override {
     if (GRPC_TRACE_FLAG_ENABLED(grpc_lb_xds_trace)) {

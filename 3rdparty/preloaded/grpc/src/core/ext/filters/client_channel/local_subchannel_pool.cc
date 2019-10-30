@@ -28,7 +28,7 @@ LocalSubchannelPool::LocalSubchannelPool() {
   subchannel_map_ = grpc_avl_create(&subchannel_avl_vtable_);
 }
 
-LocalSubchannelPool::~LocalSubchannelPool() {
+LocalSubchannelPool::~LocalSubchannelPool() noexcept {
   grpc_avl_unref(subchannel_map_, nullptr);
 }
 

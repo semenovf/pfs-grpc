@@ -65,7 +65,7 @@ ServerRetryThrottleData::ServerRetryThrottleData(
   }
 }
 
-ServerRetryThrottleData::~ServerRetryThrottleData() {
+ServerRetryThrottleData::~ServerRetryThrottleData() noexcept {
   ServerRetryThrottleData* replacement =
       reinterpret_cast<ServerRetryThrottleData*>(
           gpr_atm_acq_load(&replacement_));
