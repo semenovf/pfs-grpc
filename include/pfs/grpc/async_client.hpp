@@ -82,7 +82,15 @@ protected:
     response_handler _on_response;
 
 public:
-    async_unary () : basic_async{} {}
+    // GCC 4.7.2 failed with error:
+    // error: cannot allocate an object of abstract type ‘pfs::grpc::basic_async’
+    // note:   because the following virtual functions are pure within ‘pfs::grpc::basic_async’:
+    // note:     virtual void pfs::grpc::basic_async::process_response(bool)
+    //                              |
+    //                              v
+    // async_unary () : basic_async{} {}
+    async_unary () : basic_async() {}
+
     virtual ~async_unary () {}
 
     void prepare_async (rpc_type && rpc, response_handler && on_response)
@@ -132,7 +140,7 @@ protected:
     response_handler         _on_response;
 
 public:
-    async_server_streaming () : basic_async{} {}
+    async_server_streaming () : basic_async() {}
     virtual ~async_server_streaming () {}
 
     void prepare_async (rpc_type && rpc, response_handler && on_response)
@@ -187,7 +195,7 @@ protected:
     response_handler _on_response;
 
 public:
-    async_server_pushing () : basic_async{} {}
+    async_server_pushing () : basic_async() {}
     virtual ~async_server_pushing () {}
 
     void prepare_async (rpc_type && rpc, response_handler && on_response)
@@ -247,7 +255,7 @@ protected:
 
 public:
     async_client_streaming (std::list<request_type> && requests)
-        : basic_async{}
+        : basic_async()
         , _requests{std::forward<std::list<request_type>>(requests)}
     {}
 
@@ -324,7 +332,7 @@ protected:
 
 public:
     async_bidi_streaming (std::list<request_type> && requests)
-        : basic_async{}
+        : basic_async()
         , _requests{std::forward<std::list<request_type>>(requests)}
     {}
 
@@ -378,7 +386,7 @@ template <typename ServiceType>
 class async_client
 {
 public:
-    using grpc_credentials_pointer = std::shared_ptr<::grpc::ChannelCredentials>;
+    using grpc_credentials_pointer = std::shared_ptr< ::grpc::ChannelCredentials>;
 
 protected:
     using stub_type = typename ServiceType::Stub;
@@ -404,7 +412,10 @@ public:
                     , grpc_completion_queue *)
             , std::function<void (ResponseType const &)> && on_response)
     {
-        using async_type = async_unary<ResponseType>;
+        // GCC 4.7.2 failed with error:
+        //      no type named response_handler in ‘using async_unary ...
+        //using async_type = async_unary<ResponseType>;
+        typedef async_unary<ResponseType> async_type;
 
         auto c = new async_type;
         auto rpc((_stub.get()->* prepareAsyncReader)(
@@ -425,7 +436,8 @@ public:
                     , grpc_completion_queue *)
             , std::function<void (std::list<ResponseType> const &)> && on_response)
     {
-        using async_type = async_server_streaming<ResponseType>;
+        //using async_type = async_server_streaming<ResponseType>;
+        typedef async_server_streaming<ResponseType> async_type;
 
         auto c = new async_type;
         auto rpc((_stub.get()->* prepareAsyncReader)(
@@ -446,7 +458,8 @@ public:
                     , grpc_completion_queue *)
             , std::function<void (ResponseType const &)> && on_response)
     {
-        using async_type = async_client_streaming<RequestType, ResponseType>;
+        //using async_type = async_client_streaming<RequestType, ResponseType>;
+        typedef async_client_streaming<RequestType, ResponseType> async_type;
 
         auto c = new async_type(std::forward<std::list<RequestType>>(requests));
         auto rpc((_stub.get()->* prepareAsyncWriter)(
@@ -466,7 +479,8 @@ public:
                     , grpc_completion_queue *)
             , std::function<void (std::list<ResponseType> const &)> && on_response)
     {
-        using async_type = async_bidi_streaming<RequestType, ResponseType>;
+        //using async_type = async_bidi_streaming<RequestType, ResponseType>;
+        typedef async_bidi_streaming<RequestType, ResponseType> async_type;
 
         auto c = new async_type(std::forward<std::list<RequestType>>(requests));
         auto rpc((_stub.get()->* prepareAsyncReaderWriter)(
@@ -486,7 +500,8 @@ public:
                     , grpc_completion_queue *)
             , std::function<void (ResponseType const &)> && on_response)
     {
-        using async_type = async_server_pushing<ResponseType>;
+        //using async_type = async_server_pushing<ResponseType>;
+        typedef async_server_pushing<ResponseType> async_type;
 
         auto c = new async_type;
         auto rpc((_stub.get()->* prepareAsyncReader)(

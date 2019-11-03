@@ -63,7 +63,7 @@ class grpc_md_only_test_credentials : public grpc_call_credentials {
         md_(grpc_mdelem_from_slices(grpc_slice_from_copied_string(md_key),
                                     grpc_slice_from_copied_string(md_value))),
         is_async_(is_async) {}
-  ~grpc_md_only_test_credentials() noexcept override { GRPC_MDELEM_UNREF(md_); }
+  ~grpc_md_only_test_credentials() noexcept { GRPC_MDELEM_UNREF(md_); }
 
   bool get_request_metadata(grpc_polling_entity* pollent,
                             grpc_auth_metadata_context context,

@@ -30,7 +30,7 @@ class SpiffeCredentials final : public grpc_channel_credentials {
  public:
   explicit SpiffeCredentials(
       grpc_core::RefCountedPtr<grpc_tls_credentials_options> options);
-  ~SpiffeCredentials() noexcept override;
+  ~SpiffeCredentials() noexcept;
 
   grpc_core::RefCountedPtr<grpc_channel_security_connector>
   create_security_connector(
@@ -48,7 +48,7 @@ class SpiffeServerCredentials final : public grpc_server_credentials {
  public:
   explicit SpiffeServerCredentials(
       grpc_core::RefCountedPtr<grpc_tls_credentials_options> options);
-  ~SpiffeServerCredentials() noexcept override;
+  ~SpiffeServerCredentials() noexcept;
 
   grpc_core::RefCountedPtr<grpc_server_security_connector>
   create_security_connector() override;

@@ -345,7 +345,7 @@ class HttpConnectHandshakerFactory : public HandshakerFactory {
                       HandshakeManager* handshake_mgr) override {
     handshake_mgr->Add(MakeRefCounted<HttpConnectHandshaker>());
   }
-  ~HttpConnectHandshakerFactory() noexcept override = default;
+  ~HttpConnectHandshakerFactory() noexcept = default;
 };
 
 }  // namespace

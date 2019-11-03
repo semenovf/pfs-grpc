@@ -245,6 +245,8 @@ class concrete_async_client : public pfs::grpc::async_client<TestRpc::TestServic
 {
     using base_class = pfs::grpc::async_client<TestRpc::TestService>;
 
+private:
+
 public:
     concrete_async_client (std::string const & server_addr)
         : base_class(server_addr)

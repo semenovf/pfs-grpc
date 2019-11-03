@@ -159,6 +159,8 @@ bool ServerInterface::BaseAsyncRequest::FinalizeResult(void** tag,
     interceptor_methods_.AddInterceptionHookPoint(
         experimental::InterceptionHookPoints::POST_RECV_INITIAL_METADATA);
     interceptor_methods_.SetRecvInitialMetadata(&context_->client_metadata_);
+
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     if (interceptor_methods_.RunInterceptors(
             [this]() { ContinueFinalizeResultAfterInterception(); })) {
       // There are no interceptors to run. Continue
@@ -168,6 +170,8 @@ bool ServerInterface::BaseAsyncRequest::FinalizeResult(void** tag,
       // are done.
       return false;
     }
+// } --wladt--
+
   }
   if (*status && call_) {
     context_->BeginCompletionOp(&call_wrapper_, nullptr, nullptr);
@@ -185,10 +189,13 @@ void ServerInterface::BaseAsyncRequest::
   // Queue a tag which will be returned immediately
   grpc_core::ExecCtx exec_ctx;
   grpc_cq_begin_op(notification_cq_->cq(), this);
+
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
   grpc_cq_end_op(
       notification_cq_->cq(), this, GRPC_ERROR_NONE,
       [](void* /*arg*/, grpc_cq_completion* completion) { delete completion; },
       nullptr, new grpc_cq_completion());
+// } --wladt--
 }
 
 ServerInterface::RegisteredAsyncRequest::RegisteredAsyncRequest(
@@ -467,6 +474,7 @@ class Server::SyncRequest final : public grpc::internal::CompletionQueueTag {
         interceptor_methods_.SetRecvMessage(request_, nullptr);
       }
 
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       if (interceptor_methods_.RunInterceptors(
               [this]() { ContinueRunAfterInterception(); })) {
         ContinueRunAfterInterception();
@@ -474,6 +482,7 @@ class Server::SyncRequest final : public grpc::internal::CompletionQueueTag {
         // There were interceptors to be run, so ContinueRunAfterInterception
         // will be run when interceptors are done.
       }
+// } --wladt--
     }
 
     void ContinueRunAfterInterception() {
@@ -624,6 +633,21 @@ class Server::CallbackRequest final : public Server::CallbackRequestBase {
                           int ok) {
       static_cast<CallbackCallTag*>(cb)->Run(static_cast<bool>(ok));
     }
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    struct RunInterceptorsFunctor {
+        CallbackCallTag * _this_captured;
+        RunInterceptorsFunctor (CallbackCallTag * this_captured)
+            : _this_captured(this_captured) {}
+        void operator () () {
+            _this_captured->ContinueRunAfterInterception();
+        }
+    };
+#endif
+
     void Run(bool ok) {
       void* ignored = req_;
       bool new_ok = ok;
@@ -701,10 +725,20 @@ class Server::CallbackRequest final : public Server::CallbackRequestBase {
         req_->interceptor_methods_.SetRecvMessage(req_->request_, nullptr);
       }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+      if (req_->interceptor_methods_.RunInterceptors(RunInterceptorsFunctor(this))) {
+        ContinueRunAfterInterception();
+      }
+#else
       if (req_->interceptor_methods_.RunInterceptors(
               [this] { ContinueRunAfterInterception(); })) {
         ContinueRunAfterInterception();
-      } else {
+      }
+#endif
+      else {
         // There were interceptors to be run, so ContinueRunAfterInterception
         // will be run when interceptors are done.
       }
@@ -713,6 +747,8 @@ class Server::CallbackRequest final : public Server::CallbackRequestBase {
       auto* handler = (req_->method_ != nullptr)
                           ? req_->method_->handler()
                           : req_->server_->generic_handler_.get();
+
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       handler->RunHandler(grpc::internal::MethodHandler::HandlerParameter(
           call_, &req_->ctx_, req_->request_, req_->request_status_,
           req_->handler_data_, [this] {
@@ -737,6 +773,7 @@ class Server::CallbackRequest final : public Server::CallbackRequestBase {
               delete req_;
             }
           }));
+// } --wladt--
     }
   };
 
@@ -1311,8 +1348,10 @@ void Server::ShutdownInternal(gpr_timespec deadline) {
   // up incrementing the counter.
   {
     grpc::internal::MutexLock cblock(&callback_reqs_mu_);
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     callback_reqs_done_cv_.WaitUntil(
         &callback_reqs_mu_, [this] { return callback_reqs_outstanding_ == 0; });
+// } --wladt--
   }
 
   // Drain the shutdown queue (if the previous call to AsyncNext() timed out

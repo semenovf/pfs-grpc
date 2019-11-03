@@ -126,7 +126,7 @@ class grpc_local_channel_security_connector final
                                         std::move(request_metadata_creds)),
         target_name_(gpr_strdup(target_name)) {}
 
-  ~grpc_local_channel_security_connector() noexcept override { gpr_free(target_name_); }
+  ~grpc_local_channel_security_connector() noexcept { gpr_free(target_name_); }
 
   void add_handshakers(
       const grpc_channel_args* args, grpc_pollset_set* interested_parties,
@@ -184,7 +184,7 @@ class grpc_local_server_security_connector final
   grpc_local_server_security_connector(
       grpc_core::RefCountedPtr<grpc_server_credentials> server_creds)
       : grpc_server_security_connector(nullptr, std::move(server_creds)) {}
-  ~grpc_local_server_security_connector() noexcept override = default;
+  ~grpc_local_server_security_connector() noexcept = default;
 
   void add_handshakers(
       const grpc_channel_args* args, grpc_pollset_set* interested_parties,

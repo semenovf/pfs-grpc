@@ -112,6 +112,8 @@ class PickFirst : public LoadBalancingPolicy {
     explicit Picker(RefCountedPtr<SubchannelInterface> subchannel)
         : subchannel_(std::move(subchannel)) {}
 
+    ~Picker() noexcept {}
+
     PickResult Pick(PickArgs args) override {
       PickResult result;
       result.type = PickResult::PICK_COMPLETE;

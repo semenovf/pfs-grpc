@@ -36,7 +36,7 @@ class grpc_composite_channel_credentials : public grpc_channel_credentials {
         inner_creds_(std::move(channel_creds)),
         call_creds_(std::move(call_creds)) {}
 
-  ~grpc_composite_channel_credentials() noexcept override {}//= default;
+  ~grpc_composite_channel_credentials() noexcept {}//= default;
 
   grpc_core::RefCountedPtr<grpc_channel_credentials>
   duplicate_without_call_credentials() override {
@@ -75,7 +75,7 @@ class grpc_composite_call_credentials : public grpc_call_credentials {
   grpc_composite_call_credentials(
       grpc_core::RefCountedPtr<grpc_call_credentials> creds1,
       grpc_core::RefCountedPtr<grpc_call_credentials> creds2);
-  ~grpc_composite_call_credentials() noexcept override {} //= default;
+  ~grpc_composite_call_credentials() noexcept {} //= default;
 
   bool get_request_metadata(grpc_polling_entity* pollent,
                             grpc_auth_metadata_context context,

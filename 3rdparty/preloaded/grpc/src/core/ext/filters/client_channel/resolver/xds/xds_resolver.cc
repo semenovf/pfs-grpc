@@ -52,6 +52,7 @@ class XdsResolver : public Resolver {
    public:
     explicit ServiceConfigWatcher(RefCountedPtr<XdsResolver> resolver)
         : resolver_(std::move(resolver)) {}
+    ~ServiceConfigWatcher() noexcept {}
     void OnServiceConfigChanged(
         RefCountedPtr<ServiceConfig> service_config) override;
     void OnError(grpc_error* error) override;

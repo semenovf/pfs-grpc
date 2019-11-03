@@ -377,9 +377,11 @@ class CallOpSendMessage {
 template <class M>
 Status CallOpSendMessage::SendMessage(const M& message, WriteOptions options) {
   write_options_ = options;
+
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
   serializer_ = [this](const void* message) {
     bool own_buf;
-    send_buf_.Clear();
+    this->send_buf_.Clear();
     // TODO(vjpai): Remove the void below when possible
     // The void in the template parameter below should not be needed
     // (since it should be implicit) but is needed due to an observed
@@ -387,10 +389,12 @@ Status CallOpSendMessage::SendMessage(const M& message, WriteOptions options) {
     Status result = SerializationTraits<M, void>::Serialize(
         *static_cast<const M*>(message), send_buf_.bbuf_ptr(), &own_buf);
     if (!own_buf) {
-      send_buf_.Duplicate();
+      this->send_buf_.Duplicate();
     }
     return result;
   };
+// } --wladt--
+
   // Serialize immediately only if we do not have access to the message pointer
   if (msg_ == nullptr) {
     Status result = serializer_(&message);

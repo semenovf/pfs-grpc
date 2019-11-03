@@ -48,7 +48,7 @@ class grpc_httpcli_ssl_channel_security_connector final
             /*request_metadata_creds=*/nullptr),
         secure_peer_name_(secure_peer_name) {}
 
-  ~grpc_httpcli_ssl_channel_security_connector() noexcept override {
+  ~grpc_httpcli_ssl_channel_security_connector() noexcept {
     if (handshaker_factory_ != nullptr) {
       tsi_ssl_client_handshaker_factory_unref(handshaker_factory_);
     }

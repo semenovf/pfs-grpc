@@ -50,7 +50,7 @@ class grpc_google_default_channel_credentials
         alts_creds_(std::move(alts_creds)),
         ssl_creds_(std::move(ssl_creds)) {}
 
-  ~grpc_google_default_channel_credentials() noexcept override {}//= default;
+  ~grpc_google_default_channel_credentials() noexcept {}//= default;
 
   grpc_core::RefCountedPtr<grpc_channel_security_connector>
   create_security_connector(

@@ -133,11 +133,10 @@ else()
   set(_gRPC_CORE_NOSTDCXX_FLAGS "")
 endif()
 
-# --wladt--
 include(cmake/address_sorting.cmake)
-#include(cmake/benchmark.cmake)
+#include(cmake/benchmark.cmake) # --wladt--
 include(cmake/cares.cmake)
-#include(cmake/gflags.cmake)
+#include(cmake/gflags.cmake) # --wladt--
 include(cmake/protobuf.cmake)
 include(cmake/ssl.cmake)
 include(cmake/upb.cmake)
@@ -907,9 +906,6 @@ if(WIN32 AND MSVC)
   endif()
 endif()
 
-#--wladt--
-target_compile_definitions(gpr PRIVATE "-D__STDC_LIMIT_MACROS")
-
 target_include_directories(gpr
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -1374,9 +1370,6 @@ if(WIN32 AND MSVC)
   endif()
 endif()
 
-#--wladt--
-target_compile_definitions(grpc PRIVATE "-D__STDC_LIMIT_MACROS")
-
 target_include_directories(grpc
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -1790,7 +1783,6 @@ if(WIN32 AND MSVC)
     )
   endif()
 endif()
-
 
 target_include_directories(grpc_cronet
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -2880,7 +2872,6 @@ if(WIN32 AND MSVC)
   endif()
 endif()
 
-
 target_include_directories(grpc_unsecure
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -3218,7 +3209,6 @@ if(WIN32 AND MSVC)
     )
   endif()
 endif()
-
 
 target_include_directories(grpc++
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -3718,6 +3708,8 @@ endif (gRPC_BUILD_CODEGEN)
 endif (gRPC_BUILD_TESTS)
 
 if (gRPC_BUILD_CODEGEN)
+
+# --wladt-- (Optional library)
 add_library(grpc++_reflection
   src/cpp/ext/proto_server_reflection.cc
   src/cpp/ext/proto_server_reflection_plugin.cc
@@ -4323,7 +4315,6 @@ if(WIN32 AND MSVC)
     )
   endif()
 endif()
-
 
 target_include_directories(grpc++_unsecure
   PUBLIC $<INSTALL_INTERFACE:${gRPC_INSTALL_INCLUDEDIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

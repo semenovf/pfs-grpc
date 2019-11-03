@@ -39,7 +39,7 @@ class grpc_fake_channel_credentials final : public grpc_channel_credentials {
   grpc_fake_channel_credentials()
       : grpc_channel_credentials(
             GRPC_CHANNEL_CREDENTIALS_TYPE_FAKE_TRANSPORT_SECURITY) {}
-  ~grpc_fake_channel_credentials() noexcept override = default;
+  ~grpc_fake_channel_credentials() noexcept = default;
 
   grpc_core::RefCountedPtr<grpc_channel_security_connector>
   create_security_connector(
@@ -56,7 +56,7 @@ class grpc_fake_server_credentials final : public grpc_server_credentials {
   grpc_fake_server_credentials()
       : grpc_server_credentials(
             GRPC_CHANNEL_CREDENTIALS_TYPE_FAKE_TRANSPORT_SECURITY) {}
-  ~grpc_fake_server_credentials() noexcept override = default;
+  ~grpc_fake_server_credentials() noexcept = default;
 
   grpc_core::RefCountedPtr<grpc_server_security_connector>
   create_security_connector() override {

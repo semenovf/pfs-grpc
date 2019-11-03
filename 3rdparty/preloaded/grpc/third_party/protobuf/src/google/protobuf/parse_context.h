@@ -308,8 +308,10 @@ class PROTOBUF_EXPORT EpsCopyInputStream {
 
   PROTOBUF_MUST_USE_RESULT const char* AppendString(const char* ptr,
                                                     std::string* str) {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     return AppendUntilEnd(
         ptr, [str](const char* p, ptrdiff_t s) { str->append(p, s); });
+// } --wladt--
   }
   friend class ImplicitWeakMessage;
 };

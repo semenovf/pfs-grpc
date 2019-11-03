@@ -29,7 +29,7 @@
 class grpc_local_credentials final : public grpc_channel_credentials {
  public:
   explicit grpc_local_credentials(grpc_local_connect_type connect_type);
-  ~grpc_local_credentials() noexcept override = default;
+  ~grpc_local_credentials() noexcept = default;
 
   grpc_core::RefCountedPtr<grpc_channel_security_connector>
   create_security_connector(
@@ -47,7 +47,7 @@ class grpc_local_credentials final : public grpc_channel_credentials {
 class grpc_local_server_credentials final : public grpc_server_credentials {
  public:
   explicit grpc_local_server_credentials(grpc_local_connect_type connect_type);
-  ~grpc_local_server_credentials() noexcept override = default;
+  ~grpc_local_server_credentials() noexcept = default;
 
   grpc_core::RefCountedPtr<grpc_server_security_connector>
   create_security_connector() override;

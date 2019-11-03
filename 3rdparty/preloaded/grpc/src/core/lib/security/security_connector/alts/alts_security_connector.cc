@@ -78,7 +78,7 @@ class grpc_alts_channel_security_connector final
     alts_set_rpc_protocol_versions(&creds->mutable_options()->rpc_versions);
   }
 
-  ~grpc_alts_channel_security_connector() noexcept override { gpr_free(target_name_); }
+  ~grpc_alts_channel_security_connector() noexcept { gpr_free(target_name_); }
 
   void add_handshakers(
       const grpc_channel_args* args, grpc_pollset_set* interested_parties,
@@ -139,7 +139,7 @@ class grpc_alts_server_security_connector final
         reinterpret_cast<grpc_alts_server_credentials*>(mutable_server_creds());
     alts_set_rpc_protocol_versions(&creds->mutable_options()->rpc_versions);
   }
-  ~grpc_alts_server_security_connector() noexcept override = default;
+  ~grpc_alts_server_security_connector() noexcept = default;
 
   void add_handshakers(
       const grpc_channel_args* args, grpc_pollset_set* interested_parties,

@@ -43,13 +43,12 @@ public:
     using base_class = std::map<Key, T, Compare, Allocator<std::pair<const Key, T>>>;
     using iterator = typename base_class::iterator;
 public:
-    std::pair<iterator,bool> emplace (Key && key, T && value)
+    template<typename K, typename U>
+    std::pair<iterator, bool> emplace (K && key, U && value)
     {
-        return this->insert(std::make_pair(std::forward<Key>(key), std::forward<T>(value)));
-//         return this->insert(std::make_pair(key, value));
+        return this->insert(std::make_pair(std::forward<K>(key), std::forward<U>(value)));
     }
 };
-
 #else
 template <class Key, class T, class Compare = std::less<Key>>
 using Map = std::map<Key, T, Compare, Allocator<std::pair<const Key, T>>>;

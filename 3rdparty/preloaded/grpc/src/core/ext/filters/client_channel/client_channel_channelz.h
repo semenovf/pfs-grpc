@@ -35,7 +35,7 @@ namespace channelz {
 class SubchannelNode : public BaseNode {
  public:
   SubchannelNode(const char* target_address, size_t channel_tracer_max_nodes);
-  ~SubchannelNode() noexcept override;
+  ~SubchannelNode() noexcept;
 
   // Sets the subchannel's connectivity state without health checking.
   void UpdateConnectivityState(grpc_connectivity_state state);

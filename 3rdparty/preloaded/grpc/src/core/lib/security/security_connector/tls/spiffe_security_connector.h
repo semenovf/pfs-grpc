@@ -45,7 +45,7 @@ class SpiffeChannelSecurityConnector final
       grpc_core::RefCountedPtr<grpc_channel_credentials> channel_creds,
       grpc_core::RefCountedPtr<grpc_call_credentials> request_metadata_creds,
       const char* target_name, const char* overridden_target_name);
-  ~SpiffeChannelSecurityConnector() noexcept override;
+  ~SpiffeChannelSecurityConnector() noexcept;
 
   void add_handshakers(const grpc_channel_args* args,
                        grpc_pollset_set* interested_parties,
@@ -116,7 +116,7 @@ class SpiffeServerSecurityConnector final
 
   explicit SpiffeServerSecurityConnector(
       grpc_core::RefCountedPtr<grpc_server_credentials> server_creds);
-  ~SpiffeServerSecurityConnector() noexcept override;
+  ~SpiffeServerSecurityConnector() noexcept;
 
   void add_handshakers(const grpc_channel_args* args,
                        grpc_pollset_set* interested_parties,

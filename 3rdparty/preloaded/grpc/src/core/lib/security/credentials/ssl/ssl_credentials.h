@@ -30,7 +30,7 @@ class grpc_ssl_credentials : public grpc_channel_credentials {
                        grpc_ssl_pem_key_cert_pair* pem_key_cert_pair,
                        const grpc_ssl_verify_peer_options* verify_options);
 
-  ~grpc_ssl_credentials() noexcept override;
+  ~grpc_ssl_credentials() noexcept;
 
   grpc_core::RefCountedPtr<grpc_channel_security_connector>
   create_security_connector(
@@ -61,7 +61,7 @@ class grpc_ssl_server_credentials final : public grpc_server_credentials {
  public:
   grpc_ssl_server_credentials(
       const grpc_ssl_server_credentials_options& options);
-  ~grpc_ssl_server_credentials() noexcept override;
+  ~grpc_ssl_server_credentials() noexcept;
 
   grpc_core::RefCountedPtr<grpc_server_security_connector>
   create_security_connector() override;

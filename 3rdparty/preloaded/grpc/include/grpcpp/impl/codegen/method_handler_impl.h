@@ -64,10 +64,12 @@ class RpcMethodHandler : public ::grpc::internal::MethodHandler {
     ResponseType rsp;
     ::grpc::Status status = param.status;
     if (status.ok()) {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       status = CatchingFunctionHandler([this, &param, &rsp] {
         return func_(service_, param.server_context,
                      static_cast<RequestType*>(param.request), &rsp);
       });
+// } --wladt--
       static_cast<RequestType*>(param.request)->~RequestType();
     }
 
@@ -131,10 +133,12 @@ class ClientStreamingHandler : public ::grpc::internal::MethodHandler {
     ::grpc_impl::ServerReader<RequestType> reader(param.call,
                                                   param.server_context);
     ResponseType rsp;
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     ::grpc::Status status =
         CatchingFunctionHandler([this, &param, &reader, &rsp] {
           return func_(service_, param.server_context, &reader, &rsp);
         });
+// } --wladt--
 
     ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                                 ::grpc::internal::CallOpSendMessage,
@@ -180,10 +184,12 @@ class ServerStreamingHandler : public ::grpc::internal::MethodHandler {
     if (status.ok()) {
       ::grpc_impl::ServerWriter<ResponseType> writer(param.call,
                                                      param.server_context);
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       status = CatchingFunctionHandler([this, &param, &writer] {
         return func_(service_, param.server_context,
                      static_cast<RequestType*>(param.request), &writer);
       });
+// } --wladt--
       static_cast<RequestType*>(param.request)->~RequestType();
     }
 
@@ -247,9 +253,12 @@ class TemplatedBidiStreamingHandler : public ::grpc::internal::MethodHandler {
 
   void RunHandler(const HandlerParameter& param) final {
     Streamer stream(param.call, param.server_context);
+
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     ::grpc::Status status = CatchingFunctionHandler([this, &param, &stream] {
       return func_(param.server_context, &stream);
     });
+// } --wladt--
 
     ::grpc::internal::CallOpSet< ::grpc::internal::CallOpSendInitialMetadata,
                                 ::grpc::internal::CallOpServerSendStatus>

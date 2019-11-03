@@ -152,6 +152,7 @@ class RoundRobin : public LoadBalancingPolicy {
   class Picker : public SubchannelPicker {
    public:
     Picker(RoundRobin* parent, RoundRobinSubchannelList* subchannel_list);
+    ~Picker() noexcept {}
 
     PickResult Pick(PickArgs args) override;
 

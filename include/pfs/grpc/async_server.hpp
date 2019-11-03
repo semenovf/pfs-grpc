@@ -8,6 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <grpcpp/grpcpp.h>
+#include <functional>
 #include <list>
 #include <memory>
 
@@ -26,7 +27,7 @@ using server_completion_queue = ::grpc::ServerCompletionQueue;
 using completion_queue = ::grpc::CompletionQueue;
 using server_type = ::grpc::Server;
 using server_builder = ::grpc::ServerBuilder;
-using server_credentials_pointer = std::shared_ptr<::grpc::ServerCredentials>;
+using server_credentials_pointer = std::shared_ptr< ::grpc::ServerCredentials>;
 using server_context_type = ::grpc::ServerContext;
 using status_type = ::grpc::Status;
 
@@ -496,7 +497,10 @@ public:
     bool register_method (typename async_unary_method<ServiceClass, RequestType, ResponseType>::request_registrar_func register_request
             ,  typename async_unary_method<ServiceClass, RequestType, ResponseType>::request_handler && on_request)
     {
-        using async_method = async_unary_method<ServiceClass, RequestType, ResponseType>;
+        // GCC 4.7.2 failed with error:
+        //      no type named ‘request_handler’ in ‘using async_method ...
+        //using async_method = async_unary_method<ServiceClass, RequestType, ResponseType>;
+        typedef async_unary_method<ServiceClass, RequestType, ResponseType> async_method;
 
         auto m = new async_method(& _service, _cqueue.get());
         m->register_method(register_request
@@ -509,7 +513,8 @@ public:
     bool register_method (typename async_server_streaming_method<ServiceClass, RequestType, ResponseType>::request_registrar_func register_request
             ,  typename async_server_streaming_method<ServiceClass, RequestType, ResponseType>::request_handler && on_request)
     {
-        using async_method = async_server_streaming_method<ServiceClass, RequestType, ResponseType>;
+        //using async_method = async_server_streaming_method<ServiceClass, RequestType, ResponseType>;
+        typedef async_server_streaming_method<ServiceClass, RequestType, ResponseType> async_method;
 
         auto m = new async_method(& _service, _cqueue.get());
         m->register_method(register_request
@@ -522,7 +527,8 @@ public:
     bool register_method (typename async_client_streaming_method<ServiceClass, RequestType, ResponseType>::request_registrar_func register_request
             ,  typename async_client_streaming_method<ServiceClass, RequestType, ResponseType>::request_handler && on_request)
     {
-        using async_method = async_client_streaming_method<ServiceClass, RequestType, ResponseType>;
+        //using async_method = async_client_streaming_method<ServiceClass, RequestType, ResponseType>;
+        typedef async_client_streaming_method<ServiceClass, RequestType, ResponseType> async_method ;
 
         auto m = new async_method(& _service, _cqueue.get());
         m->register_method(register_request
@@ -535,7 +541,8 @@ public:
     bool register_method (typename async_bidi_streaming_method<ServiceClass, RequestType, ResponseType>::request_registrar_func register_request
             ,  typename async_bidi_streaming_method<ServiceClass, RequestType, ResponseType>::request_handler && on_request)
     {
-        using async_method = async_bidi_streaming_method<ServiceClass, RequestType, ResponseType>;
+        //using async_method = async_bidi_streaming_method<ServiceClass, RequestType, ResponseType>;
+        typedef async_bidi_streaming_method<ServiceClass, RequestType, ResponseType> async_method;
 
         auto m = new async_method(& _service, _cqueue.get());
         m->register_method(register_request

@@ -193,9 +193,9 @@ std::string Base63(I n, int k) {
 
 std::string IntTypeName(const Options& options, const std::string& type) {
   if (options.opensource_runtime) {
-    return "::PROTOBUF_NAMESPACE_ID::" + type;
+    return " ::PROTOBUF_NAMESPACE_ID::" + type; // --wladt-- prepended space
   } else {
-    return "::" + type;
+    return " ::" + type; // --wladt-- prepended space
   }
 }
 
@@ -1608,7 +1608,7 @@ class ParseLoopGenerator {
                     QualifiedClassName(field->enum_type(), options_));
             format_.Indent();
           }
-          format_("$1$_$2$(static_cast<$3$>(val));\n", prefix, FieldName(field),
+          format_("$1$_$2$(static_cast< $3$ >(val));\n", prefix, FieldName(field),
                   QualifiedClassName(field->enum_type(), options_));
           if (!HasPreservingUnknownEnumSemantics(field)) {
             format_.Outdent();
@@ -1650,7 +1650,7 @@ class ParseLoopGenerator {
         if (field->is_repeated() || field->containing_oneof()) {
           string prefix = field->is_repeated() ? "add" : "set";
           format_(
-              "$1$_$2$($pi_ns$::UnalignedLoad<$3$>(ptr));\n"
+              "$1$_$2$($pi_ns$::UnalignedLoad< $3$ >(ptr));\n"
               "ptr += sizeof($3$);\n",
               prefix, FieldName(field), type);
         } else {
@@ -1659,7 +1659,7 @@ class ParseLoopGenerator {
                     FieldName(field));
           }
           format_(
-              "$1$_ = $pi_ns$::UnalignedLoad<$2$>(ptr);\n"
+              "$1$_ = $pi_ns$::UnalignedLoad< $2$ >(ptr);\n"
               "ptr += sizeof($2$);\n",
               FieldName(field), type);
         }
@@ -1741,7 +1741,7 @@ class ParseLoopGenerator {
       uint32 fallback_tag = 0;
       uint32 expected_tag = ExpectedTag(field, &fallback_tag);
       format_(
-          "if (PROTOBUF_PREDICT_TRUE(static_cast<$uint8$>(tag) == $1$)) {\n",
+          "if (PROTOBUF_PREDICT_TRUE(static_cast< $uint8$ >(tag) == $1$)) {\n",
           expected_tag & 0xFF);
       format_.Indent();
       auto wiretype = WireFormatLite::GetTagWireType(expected_tag);
@@ -1762,12 +1762,12 @@ class ParseLoopGenerator {
         format_.Outdent();
         format_(
             "  if (!ctx->DataAvailable(ptr)) break;\n"
-            "} while ($pi_ns$::UnalignedLoad<$1$>(ptr) == $2$);\n",
+            "} while ($pi_ns$::UnalignedLoad< $1$ >(ptr) == $2$);\n",
             IntTypeName(options_, type), SmallVarintValue(tag));
       }
       format_.Outdent();
       if (fallback_tag) {
-        format_("} else if (static_cast<$uint8$>(tag) == $1$) {\n",
+        format_("} else if (static_cast< $uint8$ >(tag) == $1$) {\n",
                 fallback_tag & 0xFF);
         format_.Indent();
         GenerateFieldBody(WireFormatLite::GetTagWireType(fallback_tag), field);

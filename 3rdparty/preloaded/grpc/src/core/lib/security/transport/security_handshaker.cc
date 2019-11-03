@@ -49,7 +49,7 @@ class SecurityHandshaker : public Handshaker {
   SecurityHandshaker(tsi_handshaker* handshaker,
                      grpc_security_connector* connector,
                      const grpc_channel_args* args);
-  ~SecurityHandshaker() noexcept override;
+  ~SecurityHandshaker() noexcept;
   void Shutdown(grpc_error* why) override;
   void DoHandshake(grpc_tcp_server_acceptor* acceptor,
                    grpc_closure* on_handshake_done,
@@ -475,7 +475,7 @@ class ClientSecurityHandshakerFactory : public HandshakerFactory {
                                           handshake_mgr);
     }
   }
-  ~ClientSecurityHandshakerFactory() noexcept override = default;
+  ~ClientSecurityHandshakerFactory() noexcept = default;
 };
 
 class ServerSecurityHandshakerFactory : public HandshakerFactory {
@@ -491,7 +491,7 @@ class ServerSecurityHandshakerFactory : public HandshakerFactory {
                                           handshake_mgr);
     }
   }
-  ~ServerSecurityHandshakerFactory() noexcept override = default;
+  ~ServerSecurityHandshakerFactory() noexcept = default;
 };
 
 }  // namespace

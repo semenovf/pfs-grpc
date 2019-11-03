@@ -92,7 +92,7 @@ class grpc_channel_security_connector : public grpc_security_connector {
       grpc_core::RefCountedPtr<grpc_call_credentials> request_metadata_creds
       /*,
       grpc_channel_args* channel_args = nullptr*/);
-  ~grpc_channel_security_connector() noexcept override;
+  ~grpc_channel_security_connector() noexcept;
 
   /// Checks that the host that will be set for a call is acceptable.
   /// Returns true if completed synchronously, in which case \a error will

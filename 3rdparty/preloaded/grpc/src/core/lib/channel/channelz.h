@@ -232,7 +232,7 @@ class ServerNode : public BaseNode {
  public:
   ServerNode(grpc_server* server, size_t channel_tracer_max_nodes);
 
-  ~ServerNode() noexcept override;
+  ~ServerNode() noexcept;
 
   grpc_json* RenderJson() override;
 
@@ -273,7 +273,7 @@ class SocketNode : public BaseNode {
  public:
   SocketNode(UniquePtr<char> local, UniquePtr<char> remote,
              UniquePtr<char> name);
-  ~SocketNode() noexcept override {}
+  ~SocketNode() noexcept {}
 
   grpc_json* RenderJson() override;
 
@@ -312,7 +312,7 @@ class SocketNode : public BaseNode {
 class ListenSocketNode : public BaseNode {
  public:
   ListenSocketNode(UniquePtr<char> local_addr, UniquePtr<char> name);
-  ~ListenSocketNode() noexcept override {}
+  ~ListenSocketNode() noexcept {}
 
   grpc_json* RenderJson() override;
 

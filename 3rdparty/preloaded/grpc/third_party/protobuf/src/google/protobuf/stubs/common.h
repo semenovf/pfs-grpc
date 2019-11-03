@@ -183,7 +183,9 @@ PROTOBUF_EXPORT void OnShutdownRun(void (*f)(const void*), const void* arg);
 
 template <typename T>
 T* OnShutdownDelete(T* p) {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
   OnShutdownRun([](const void* pp) { delete static_cast<const T*>(pp); }, p);
+// } --wladt--
   return p;
 }
 

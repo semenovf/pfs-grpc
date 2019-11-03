@@ -1,11 +1,10 @@
+################################################################################
+# Check std::is_trivially_destructible
+#
 # Workaround of g++ error:
 # ‘<::’ cannot begin a template-argument list [-fpermissive]
 # note: ‘<:’ is an alternate spelling for ‘[’. Insert whitespace between ‘<’and ‘::’
 # (if you use ‘-fpermissive’ G++ will accept your code)
-include(CheckCXXSourceCompiles)
-
-################################################################################
-# Check std::is_trivially_destructible
 ################################################################################
 CHECK_CXX_SOURCE_COMPILES(
 "
@@ -21,9 +20,9 @@ int main ()
     return 0;
 }" cxx_gxx_permissive)
 
-message("+++ cxx_gxx_permissive: [${cxx_gxx_permissive}]")
-
 if (NOT cxx_gxx_permissive)
-    message(WARNING "--- Template-argument cannot begin with '<::' is not default compiler behaviour")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+    message(WARNING "W: Template-argument cannot begin with '<::' is not default compiler behaviour")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+    endif()
 endif()

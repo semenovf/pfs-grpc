@@ -31,7 +31,7 @@ class grpc_alts_credentials final : public grpc_channel_credentials {
  public:
   grpc_alts_credentials(const grpc_alts_credentials_options* options,
                         const char* handshaker_service_url);
-  ~grpc_alts_credentials() noexcept override;
+  ~grpc_alts_credentials() noexcept;
 
   grpc_core::RefCountedPtr<grpc_channel_security_connector>
   create_security_connector(
@@ -53,7 +53,7 @@ class grpc_alts_server_credentials final : public grpc_server_credentials {
  public:
   grpc_alts_server_credentials(const grpc_alts_credentials_options* options,
                                const char* handshaker_service_url);
-  ~grpc_alts_server_credentials() noexcept override;
+  ~grpc_alts_server_credentials() noexcept;
 
   grpc_core::RefCountedPtr<grpc_server_security_connector>
   create_security_connector() override;

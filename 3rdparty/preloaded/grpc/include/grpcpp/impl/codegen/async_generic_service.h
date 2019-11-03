@@ -143,9 +143,11 @@ class CallbackGenericService {
 
   ::grpc_impl::internal::CallbackBidiHandler<ByteBuffer, ByteBuffer>*
   Handler() {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     return new ::grpc_impl::internal::CallbackBidiHandler<ByteBuffer,
                                                           ByteBuffer>(
         [this] { return CreateReactor(); });
+// } --wladt--
   }
 
   grpc_impl::Server* server_{nullptr};

@@ -34,7 +34,7 @@ class GlobalSubchannelPool final : public SubchannelPoolInterface {
  public:
   // The ctor and dtor are not intended to use directly.
   GlobalSubchannelPool();
-  ~GlobalSubchannelPool() noexcept override;
+  ~GlobalSubchannelPool() noexcept;
 
   // Should be called exactly once at filter initialization time.
   static void Init();

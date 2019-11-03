@@ -35,7 +35,7 @@ namespace grpc_core {
 class LocalSubchannelPool final : public SubchannelPoolInterface {
  public:
   LocalSubchannelPool();
-  ~LocalSubchannelPool() noexcept override;
+  ~LocalSubchannelPool() noexcept;
 
   // Implements interface methods.
   // Thread-unsafe. Intended to be invoked within the client_channel combiner.

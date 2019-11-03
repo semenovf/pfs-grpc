@@ -70,7 +70,7 @@ class grpc_fake_channel_security_connector final
     }
   }
 
-  ~grpc_fake_channel_security_connector() noexcept override {
+  ~grpc_fake_channel_security_connector() noexcept {
     gpr_free(target_);
     gpr_free(expected_targets_);
     if (target_name_override_ != nullptr) gpr_free(target_name_override_);
@@ -264,7 +264,7 @@ class grpc_fake_server_security_connector
       grpc_core::RefCountedPtr<grpc_server_credentials> server_creds)
       : grpc_server_security_connector(GRPC_FAKE_SECURITY_URL_SCHEME,
                                        std::move(server_creds)) {}
-  ~grpc_fake_server_security_connector() noexcept override = default;
+  ~grpc_fake_server_security_connector() noexcept = default;
 
   void check_peer(tsi_peer peer, grpc_endpoint* ep,
                   grpc_core::RefCountedPtr<grpc_auth_context>* auth_context,

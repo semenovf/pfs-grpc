@@ -71,7 +71,7 @@ struct grpc_oauth2_pending_get_request_metadata {
 class grpc_oauth2_token_fetcher_credentials : public grpc_call_credentials {
  public:
   grpc_oauth2_token_fetcher_credentials();
-  ~grpc_oauth2_token_fetcher_credentials() noexcept override;
+  ~grpc_oauth2_token_fetcher_credentials() noexcept;
 
   bool get_request_metadata(grpc_polling_entity* pollent,
                             grpc_auth_metadata_context context,
@@ -106,7 +106,7 @@ class grpc_google_refresh_token_credentials final
     : public grpc_oauth2_token_fetcher_credentials {
  public:
   grpc_google_refresh_token_credentials(grpc_auth_refresh_token refresh_token);
-  ~grpc_google_refresh_token_credentials() noexcept override;
+  ~grpc_google_refresh_token_credentials() noexcept;
 
   const grpc_auth_refresh_token& refresh_token() const {
     return refresh_token_;
@@ -127,7 +127,7 @@ class grpc_google_refresh_token_credentials final
 class grpc_access_token_credentials final : public grpc_call_credentials {
  public:
   grpc_access_token_credentials(const char* access_token);
-  ~grpc_access_token_credentials() noexcept override;
+  ~grpc_access_token_credentials() noexcept;
 
   bool get_request_metadata(grpc_polling_entity* pollent,
                             grpc_auth_metadata_context context,

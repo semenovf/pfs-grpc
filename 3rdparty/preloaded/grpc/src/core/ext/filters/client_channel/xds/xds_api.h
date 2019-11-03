@@ -95,7 +95,7 @@ class XdsPriorityListUpdate {
 // So no additional synchronization is needed.
 class XdsDropConfig : public RefCounted<XdsDropConfig> {
  public:
-  ~XdsDropConfig() noexcept override {}
+  ~XdsDropConfig() noexcept {}
   struct DropCategory {
     bool operator==(const DropCategory& other) const {
       return strcmp(name.get(), other.name.get()) == 0 &&

@@ -363,7 +363,7 @@ class grpc_compute_engine_token_fetcher_credentials
     : public grpc_oauth2_token_fetcher_credentials {
  public:
   grpc_compute_engine_token_fetcher_credentials() = default;
-  ~grpc_compute_engine_token_fetcher_credentials() noexcept override = default;
+  ~grpc_compute_engine_token_fetcher_credentials() noexcept = default;
 
  protected:
   void fetch_oauth2(grpc_credentials_metadata_request* metadata_req,
@@ -533,7 +533,7 @@ class StsTokenFetcherCredentials
         actor_token_path_(gpr_strdup(options->actor_token_path)),
         actor_token_type_(gpr_strdup(options->actor_token_type)) {}
 
-  ~StsTokenFetcherCredentials() noexcept override { grpc_uri_destroy(sts_url_); }
+  ~StsTokenFetcherCredentials() noexcept { grpc_uri_destroy(sts_url_); }
 
  private:
   void fetch_oauth2(grpc_credentials_metadata_request* metadata_req,

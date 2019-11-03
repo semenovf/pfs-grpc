@@ -29,7 +29,7 @@ class grpc_service_account_jwt_access_credentials
  public:
   grpc_service_account_jwt_access_credentials(grpc_auth_json_key key,
                                               gpr_timespec token_lifetime);
-  ~grpc_service_account_jwt_access_credentials() noexcept override;
+  ~grpc_service_account_jwt_access_credentials() noexcept;
 
   bool get_request_metadata(grpc_polling_entity* pollent,
                             grpc_auth_metadata_context context,

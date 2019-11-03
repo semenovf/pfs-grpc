@@ -1,7 +1,14 @@
 cmake_minimum_required (VERSION 3.5.1) # Minimal version for gRPC
 
-include(check_cxx_features.cmake)
-include(check_cxx11_features.cmake)
+# Workaround for GCC 4.7.2
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+    include(CheckCXXSourceCompiles)
+    include(cmake/cxx_gxx_permissive.cmake)
+    include(cmake/cxx11_is_trivially_destructible.cmake)
+    include(cmake/cxx11_map_emplace.cmake)
+    include(cmake/cxx11_unordered_map_emplace.cmake)
+    include(cmake/cxx11_gcc_47_compiler_error_1035.cmake)
+endif()
 
 set(pfs_grpc_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 set(pfs_grpc_BINARY_DIR "${CMAKE_BINARY_DIR}/pfs-grpc")
@@ -62,3 +69,13 @@ gRPC.cmake path  : ${pfs_grpc_GRPC_CMAKE}
 ================================================================================")
 
 add_subdirectory(${pfs_grpc_GRPC_SOURCE_DIR} ${pfs_grpc_GRPC_BINARY_SUBDIR})
+
+# Workaround for GCC 4.7.2
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+    target_compile_definitions(gpr PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc_cronet PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc++ PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc++_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
+endif()

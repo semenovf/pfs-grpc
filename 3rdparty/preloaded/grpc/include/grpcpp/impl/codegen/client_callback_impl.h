@@ -444,6 +444,66 @@ class ClientCallbackReaderWriterImpl
     }
   }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    struct start_tag_Set_Functor {
+        ClientCallbackReaderWriterImpl * _this_captured = nullptr;
+        start_tag_Set_Functor (ClientCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnReadInitialMetadataDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct write_tag_Set_Functor {
+        ClientCallbackReaderWriterImpl * _this_captured = nullptr;
+        write_tag_Set_Functor (ClientCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnWriteDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct read_tag_Set_Functor {
+        ClientCallbackReaderWriterImpl * _this_captured = nullptr;
+        read_tag_Set_Functor (ClientCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnReadDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct finish_tag_Set_Functor {
+        ClientCallbackReaderWriterImpl * _this_captured = nullptr;
+        finish_tag_Set_Functor (ClientCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct writes_done_tag_Set_Functor {
+        ClientCallbackReaderWriterImpl * _this_captured = nullptr;
+        writes_done_tag_Set_Functor (ClientCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnWritesDoneDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    friend start_tag_Set_Functor;
+    friend write_tag_Set_Functor;
+    friend read_tag_Set_Functor;
+    friend finish_tag_Set_Functor;
+    friend writes_done_tag_Set_Functor;
+#endif
+
   void StartCall() override {
     // This call initiates two batches, plus any backlog, each with a callback
     // 1. Send initial metadata (unless corked) + recv initial metadata
@@ -452,12 +512,19 @@ class ClientCallbackReaderWriterImpl
     // 4. Recv trailing metadata, on_completion callback
     started_ = true;
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    start_tag_.Set(call_.call(), start_tag_Set_Functor(this), & start_ops_);
+#else
     start_tag_.Set(call_.call(),
                    [this](bool ok) {
                      reactor_->OnReadInitialMetadataDone(ok);
                      MaybeFinish();
                    },
                    &start_ops_);
+#endif
     if (!start_corked_) {
       start_ops_.SendInitialMetadata(&context_->send_initial_metadata_,
                                      context_->initial_metadata_flags());
@@ -468,20 +535,36 @@ class ClientCallbackReaderWriterImpl
 
     // Also set up the read and write tags so that they don't have to be set up
     // each time
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    write_tag_.Set(call_.call(), write_tag_Set_Functor(this), & write_ops_);
+#else
     write_tag_.Set(call_.call(),
                    [this](bool ok) {
                      reactor_->OnWriteDone(ok);
                      MaybeFinish();
                    },
                    &write_ops_);
+#endif
+
     write_ops_.set_core_cq_tag(&write_tag_);
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    read_tag_.Set(call_.call(), read_tag_Set_Functor(this), & read_ops_);
+#else
     read_tag_.Set(call_.call(),
                   [this](bool ok) {
                     reactor_->OnReadDone(ok);
                     MaybeFinish();
                   },
                   &read_ops_);
+#endif
     read_ops_.set_core_cq_tag(&read_tag_);
     if (read_ops_at_start_) {
       call_.PerformOps(&read_ops_);
@@ -495,8 +578,15 @@ class ClientCallbackReaderWriterImpl
       call_.PerformOps(&writes_done_ops_);
     }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    finish_tag_.Set(call_.call(), finish_tag_Set_Functor(this), & finish_ops_);
+#else
     finish_tag_.Set(call_.call(), [this](bool /*ok*/) { MaybeFinish(); },
                     &finish_ops_);
+#endif
     finish_ops_.ClientRecvStatus(context_, &finish_status_);
     finish_ops_.set_core_cq_tag(&finish_tag_);
     call_.PerformOps(&finish_ops_);
@@ -539,12 +629,20 @@ class ClientCallbackReaderWriterImpl
       start_corked_ = false;
     }
     writes_done_ops_.ClientSendClose();
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    writes_done_tag_.Set(call_.call(), writes_done_tag_Set_Functor(this), & writes_done_ops_);
+#else
     writes_done_tag_.Set(call_.call(),
                          [this](bool ok) {
                            reactor_->OnWritesDoneDone(ok);
                            MaybeFinish();
                          },
                          &writes_done_ops_);
+#endif
     writes_done_ops_.set_core_cq_tag(&writes_done_tag_);
     callbacks_outstanding_.fetch_add(1, std::memory_order_relaxed);
     if (started_) {
@@ -656,6 +754,44 @@ class ClientCallbackReaderImpl
     }
   }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    struct start_tag_Set_Functor {
+        ClientCallbackReaderImpl * _this_captured = nullptr;
+        start_tag_Set_Functor (ClientCallbackReaderImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnReadInitialMetadataDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct read_tag_Set_Functor {
+        ClientCallbackReaderImpl * _this_captured = nullptr;
+        read_tag_Set_Functor (ClientCallbackReaderImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnReadDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct finish_tag_Set_Functor {
+        ClientCallbackReaderImpl * _this_captured = nullptr;
+        finish_tag_Set_Functor (ClientCallbackReaderImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    friend start_tag_Set_Functor;
+    friend read_tag_Set_Functor;
+    friend finish_tag_Set_Functor;
+#endif
+
   void StartCall() override {
     // This call initiates two batches, plus any backlog, each with a callback
     // 1. Send initial metadata (unless corked) + recv initial metadata
@@ -663,12 +799,19 @@ class ClientCallbackReaderImpl
     // 3. Recv trailing metadata, on_completion callback
     started_ = true;
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    start_tag_.Set(call_.call(), start_tag_Set_Functor(this), & start_ops_);
+#else
     start_tag_.Set(call_.call(),
                    [this](bool ok) {
                      reactor_->OnReadInitialMetadataDone(ok);
                      MaybeFinish();
                    },
                    &start_ops_);
+#endif
     start_ops_.SendInitialMetadata(&context_->send_initial_metadata_,
                                    context_->initial_metadata_flags());
     start_ops_.RecvInitialMetadata(context_);
@@ -676,19 +819,34 @@ class ClientCallbackReaderImpl
     call_.PerformOps(&start_ops_);
 
     // Also set up the read tag so it doesn't have to be set up each time
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    read_tag_.Set(call_.call(), read_tag_Set_Functor(this), & read_ops_);
+#else
     read_tag_.Set(call_.call(),
                   [this](bool ok) {
                     reactor_->OnReadDone(ok);
                     MaybeFinish();
                   },
                   &read_ops_);
+#endif
     read_ops_.set_core_cq_tag(&read_tag_);
     if (read_ops_at_start_) {
       call_.PerformOps(&read_ops_);
     }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    finish_tag_.Set(call_.call(), finish_tag_Set_Functor(this), & finish_ops_);
+#else
     finish_tag_.Set(call_.call(), [this](bool /*ok*/) { MaybeFinish(); },
                     &finish_ops_);
+#endif
     finish_ops_.ClientRecvStatus(context_, &finish_status_);
     finish_ops_.set_core_cq_tag(&finish_tag_);
     call_.PerformOps(&finish_ops_);
@@ -796,6 +954,55 @@ class ClientCallbackWriterImpl
     }
   }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    struct start_tag_Set_Functor {
+        ClientCallbackWriterImpl * _this_captured = nullptr;
+        start_tag_Set_Functor (ClientCallbackWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnReadInitialMetadataDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct write_tag_Set_Functor {
+        ClientCallbackWriterImpl * _this_captured = nullptr;
+        write_tag_Set_Functor (ClientCallbackWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnWriteDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct finish_tag_Set_Functor {
+        ClientCallbackWriterImpl * _this_captured = nullptr;
+        finish_tag_Set_Functor (ClientCallbackWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    struct writes_done_tag_Set_Functor {
+        ClientCallbackWriterImpl * _this_captured = nullptr;
+        writes_done_tag_Set_Functor (ClientCallbackWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnWritesDoneDone(ok);
+            _this_captured->MaybeFinish();
+        }
+    };
+
+    friend start_tag_Set_Functor;
+    friend write_tag_Set_Functor;
+    friend finish_tag_Set_Functor;
+    friend writes_done_tag_Set_Functor;
+#endif
+
   void StartCall() override {
     // This call initiates two batches, plus any backlog, each with a callback
     // 1. Send initial metadata (unless corked) + recv initial metadata
@@ -803,12 +1010,19 @@ class ClientCallbackWriterImpl
     // 3. Recv trailing metadata, on_completion callback
     started_ = true;
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    start_tag_.Set(call_.call(), start_tag_Set_Functor(this), & start_ops_);
+#else
     start_tag_.Set(call_.call(),
                    [this](bool ok) {
                      reactor_->OnReadInitialMetadataDone(ok);
                      MaybeFinish();
                    },
                    &start_ops_);
+#endif
     if (!start_corked_) {
       start_ops_.SendInitialMetadata(&context_->send_initial_metadata_,
                                      context_->initial_metadata_flags());
@@ -819,12 +1033,19 @@ class ClientCallbackWriterImpl
 
     // Also set up the read and write tags so that they don't have to be set up
     // each time
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    write_tag_.Set(call_.call(), write_tag_Set_Functor(this), & write_ops_);
+#else
     write_tag_.Set(call_.call(),
                    [this](bool ok) {
                      reactor_->OnWriteDone(ok);
                      MaybeFinish();
                    },
                    &write_ops_);
+#endif
     write_ops_.set_core_cq_tag(&write_tag_);
 
     if (write_ops_at_start_) {
@@ -835,8 +1056,15 @@ class ClientCallbackWriterImpl
       call_.PerformOps(&writes_done_ops_);
     }
 
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    finish_tag_.Set(call_.call(), finish_tag_Set_Functor(this), & finish_ops_);
+#else
     finish_tag_.Set(call_.call(), [this](bool /*ok*/) { MaybeFinish(); },
                     &finish_ops_);
+#endif
     finish_ops_.ClientRecvStatus(context_, &finish_status_);
     finish_ops_.set_core_cq_tag(&finish_tag_);
     call_.PerformOps(&finish_ops_);
@@ -869,12 +1097,21 @@ class ClientCallbackWriterImpl
       start_corked_ = false;
     }
     writes_done_ops_.ClientSendClose();
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    writes_done_tag_.Set(call_.call(), writes_done_tag_Set_Functor(this), & writes_done_ops_);
+#else
     writes_done_tag_.Set(call_.call(),
                          [this](bool ok) {
                            reactor_->OnWritesDoneDone(ok);
                            MaybeFinish();
                          },
                          &writes_done_ops_);
+#endif
+
     writes_done_ops_.set_core_cq_tag(&writes_done_tag_);
     callbacks_outstanding_.fetch_add(1, std::memory_order_relaxed);
     if (started_) {
@@ -977,21 +1214,24 @@ class ClientCallbackUnaryImpl final : public experimental::ClientCallbackUnary {
     // 1. Send initial metadata + write + writes done + recv initial metadata
     // 2. Read message, recv trailing metadata
     started_ = true;
-
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     start_tag_.Set(call_.call(),
                    [this](bool ok) {
                      reactor_->OnReadInitialMetadataDone(ok);
                      MaybeFinish();
                    },
                    &start_ops_);
+// } --wladt--
     start_ops_.SendInitialMetadata(&context_->send_initial_metadata_,
                                    context_->initial_metadata_flags());
     start_ops_.RecvInitialMetadata(context_);
     start_ops_.set_core_cq_tag(&start_tag_);
     call_.PerformOps(&start_ops_);
 
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
     finish_tag_.Set(call_.call(), [this](bool /*ok*/) { MaybeFinish(); },
                     &finish_ops_);
+// } --wladt--
     finish_ops_.ClientRecvStatus(context_, &finish_status_);
     finish_ops_.set_core_cq_tag(&finish_tag_);
     call_.PerformOps(&finish_ops_);

@@ -119,6 +119,7 @@ class DefaultHealthCheckService final : public HealthCheckServiceInterface {
                        DefaultHealthCheckService* database,
                        HealthCheckServiceImpl* service);
 
+      ~CheckCallHandler() noexcept {}
       // Not used for Check.
       void SendHealth(std::shared_ptr<CallHandler> /*self*/,
                       ServingStatus /*status*/) override {}
@@ -161,6 +162,8 @@ class DefaultHealthCheckService final : public HealthCheckServiceInterface {
       WatchCallHandler(ServerCompletionQueue* cq,
                        DefaultHealthCheckService* database,
                        HealthCheckServiceImpl* service);
+
+      ~WatchCallHandler () noexcept {}
 
       void SendHealth(std::shared_ptr<CallHandler> self,
                       ServingStatus status) override;

@@ -235,7 +235,7 @@ class ServerCallbackReaderWriter {
 template <class Request, class Response>
 class ServerBidiReactor : public internal::ServerReactor {
  public:
-  ~ServerBidiReactor() = default;
+  ~ServerBidiReactor() noexcept {}//= default;
 
   /// Do NOT call any operation initiation method (names that start with Start)
   /// until after the library has called OnStarted on this object.
@@ -363,7 +363,7 @@ class ServerBidiReactor : public internal::ServerReactor {
 template <class Request, class Response>
 class ServerReadReactor : public internal::ServerReactor {
  public:
-  ~ServerReadReactor() = default;
+  ~ServerReadReactor() noexcept {}// = default;
 
   /// The following operation initiations are exactly like ServerBidiReactor.
   void StartSendInitialMetadata() { reader_->SendInitialMetadata(); }
@@ -400,7 +400,7 @@ class ServerReadReactor : public internal::ServerReactor {
 template <class Request, class Response>
 class ServerWriteReactor : public internal::ServerReactor {
  public:
-  ~ServerWriteReactor() = default;
+  ~ServerWriteReactor() noexcept {}; //=default
 
   /// The following operation initiations are exactly like ServerBidiReactor.
   void StartSendInitialMetadata() { writer_->SendInitialMetadata(); }
@@ -560,8 +560,12 @@ class CallbackUnaryHandler : public grpc::internal::MethodHandler {
       : public experimental::ServerCallbackRpcController {
    public:
     void Finish(::grpc::Status s) override {
+
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       finish_tag_.Set(call_.call(), [this](bool) { MaybeDone(); },
                       &finish_ops_);
+// } --wladt--
+
       if (!ctx_->sent_initial_metadata_) {
         finish_ops_.SendInitialMetadata(&ctx_->initial_metadata_,
                                         ctx_->initial_metadata_flags());
@@ -586,12 +590,14 @@ class CallbackUnaryHandler : public grpc::internal::MethodHandler {
       callbacks_outstanding_.fetch_add(1, std::memory_order_relaxed);
       // TODO(vjpai): Consider taking f as a move-capture if we adopt C++14
       //              and if performance of this operation matters
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       meta_tag_.Set(call_.call(),
                     [this, f](bool ok) {
                       f(ok);
                       MaybeDone();
                     },
                     &meta_ops_);
+// } --wladt--
       meta_ops_.SendInitialMetadata(&ctx_->initial_metadata_,
                                     ctx_->initial_metadata_flags());
       if (ctx_->compression_level_set()) {
@@ -627,7 +633,9 @@ class CallbackUnaryHandler : public grpc::internal::MethodHandler {
           call_(*call),
           allocator_state_(allocator_state),
           call_requester_(std::move(call_requester)) {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       ctx_->BeginCompletionOp(call, [this](bool) { MaybeDone(); }, nullptr);
+// } --wladt--
     }
 
     const RequestType* request() { return allocator_state_->request(); }
@@ -708,8 +716,10 @@ class CallbackClientStreamingHandler : public grpc::internal::MethodHandler {
       : public experimental::ServerCallbackReader<RequestType> {
    public:
     void Finish(::grpc::Status s) override {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       finish_tag_.Set(call_.call(), [this](bool) { MaybeDone(); },
                       &finish_ops_);
+// } --wladt--
       if (!ctx_->sent_initial_metadata_) {
         finish_ops_.SendInitialMetadata(&ctx_->initial_metadata_,
                                         ctx_->initial_metadata_flags());
@@ -732,12 +742,14 @@ class CallbackClientStreamingHandler : public grpc::internal::MethodHandler {
     void SendInitialMetadata() override {
       GPR_CODEGEN_ASSERT(!ctx_->sent_initial_metadata_);
       callbacks_outstanding_.fetch_add(1, std::memory_order_relaxed);
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       meta_tag_.Set(call_.call(),
                     [this](bool ok) {
                       reactor_->OnSendInitialMetadataDone(ok);
                       MaybeDone();
                     },
                     &meta_ops_);
+// } --wladt--
       meta_ops_.SendInitialMetadata(&ctx_->initial_metadata_,
                                     ctx_->initial_metadata_flags());
       if (ctx_->compression_level_set()) {
@@ -765,6 +777,7 @@ class CallbackClientStreamingHandler : public grpc::internal::MethodHandler {
           call_(*call),
           call_requester_(std::move(call_requester)),
           reactor_(reactor) {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       ctx_->BeginCompletionOp(call, [this](bool) { MaybeDone(); }, reactor);
       read_tag_.Set(call_.call(),
                     [this](bool ok) {
@@ -772,6 +785,7 @@ class CallbackClientStreamingHandler : public grpc::internal::MethodHandler {
                       MaybeDone();
                     },
                     &read_ops_);
+// } --wladt--
       read_ops_.set_core_cq_tag(&read_tag_);
     }
 
@@ -874,8 +888,10 @@ class CallbackServerStreamingHandler : public grpc::internal::MethodHandler {
       : public experimental::ServerCallbackWriter<ResponseType> {
    public:
     void Finish(::grpc::Status s) override {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       finish_tag_.Set(call_.call(), [this](bool) { MaybeDone(); },
                       &finish_ops_);
+// } --wladt--
       finish_ops_.set_core_cq_tag(&finish_tag_);
 
       if (!ctx_->sent_initial_metadata_) {
@@ -893,12 +909,14 @@ class CallbackServerStreamingHandler : public grpc::internal::MethodHandler {
     void SendInitialMetadata() override {
       GPR_CODEGEN_ASSERT(!ctx_->sent_initial_metadata_);
       callbacks_outstanding_.fetch_add(1, std::memory_order_relaxed);
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       meta_tag_.Set(call_.call(),
                     [this](bool ok) {
                       reactor_->OnSendInitialMetadataDone(ok);
                       MaybeDone();
                     },
                     &meta_ops_);
+// } --wladt--
       meta_ops_.SendInitialMetadata(&ctx_->initial_metadata_,
                                     ctx_->initial_metadata_flags());
       if (ctx_->compression_level_set()) {
@@ -951,6 +969,7 @@ class CallbackServerStreamingHandler : public grpc::internal::MethodHandler {
           req_(req),
           call_requester_(std::move(call_requester)),
           reactor_(reactor) {
+// --wladt-- { PFS_GCC_47_COMPILER_ERROR_1035 free: approved
       ctx_->BeginCompletionOp(call, [this](bool) { MaybeDone(); }, reactor);
       write_tag_.Set(call_.call(),
                      [this](bool ok) {
@@ -958,6 +977,7 @@ class CallbackServerStreamingHandler : public grpc::internal::MethodHandler {
                        MaybeDone();
                      },
                      &write_ops_);
+// } --wladt--
       write_ops_.set_core_cq_tag(&write_tag_);
     }
     ~ServerCallbackWriterImpl() { req_->~RequestType(); }
@@ -1043,9 +1063,78 @@ class CallbackBidiHandler : public grpc::internal::MethodHandler {
       : public experimental::ServerCallbackReaderWriter<RequestType,
                                                         ResponseType> {
    public:
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+    struct finish_tag_Set_Functor {
+        ServerCallbackReaderWriterImpl * _this_captured = nullptr;
+        finish_tag_Set_Functor (ServerCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->MaybeDone();
+        }
+    };
+
+    struct meta_tag_Set_Functor {
+        ServerCallbackReaderWriterImpl * _this_captured = nullptr;
+        meta_tag_Set_Functor (ServerCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnSendInitialMetadataDone(ok);
+            _this_captured->MaybeDone();
+        }
+    };
+
+    struct ctx_BeginCompletionOp_Functor {
+        ServerCallbackReaderWriterImpl * _this_captured = nullptr;
+        ctx_BeginCompletionOp_Functor (ServerCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->MaybeDone();
+        }
+    };
+
+    struct write_tag_Set_Functor {
+        ServerCallbackReaderWriterImpl * _this_captured = nullptr;
+        write_tag_Set_Functor (ServerCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnWriteDone(ok);
+            _this_captured->MaybeDone();
+        }
+    };
+
+    struct read_tag_Set_Functor {
+        ServerCallbackReaderWriterImpl * _this_captured = nullptr;
+        read_tag_Set_Functor (ServerCallbackReaderWriterImpl * this_captured) : _this_captured(this_captured) {}
+        void operator () (bool ok)
+        {
+            _this_captured->reactor_->OnReadDone(ok);
+            _this_captured->MaybeDone();
+        }
+    };
+
+    friend finish_tag_Set_Functor;
+    friend meta_tag_Set_Functor;
+    friend ctx_BeginCompletionOp_Functor;
+    friend write_tag_Set_Functor;
+    friend read_tag_Set_Functor;
+#endif
+
     void Finish(::grpc::Status s) override {
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+      finish_tag_.Set(call_.call(), finish_tag_Set_Functor(this), & finish_ops_);
+#else
       finish_tag_.Set(call_.call(), [this](bool) { MaybeDone(); },
                       &finish_ops_);
+#endif
+
       finish_ops_.set_core_cq_tag(&finish_tag_);
 
       if (!ctx_->sent_initial_metadata_) {
@@ -1063,12 +1152,21 @@ class CallbackBidiHandler : public grpc::internal::MethodHandler {
     void SendInitialMetadata() override {
       GPR_CODEGEN_ASSERT(!ctx_->sent_initial_metadata_);
       callbacks_outstanding_.fetch_add(1, std::memory_order_relaxed);
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+      meta_tag_.Set(call_.call(), meta_tag_Set_Functor(this), & meta_ops_);
+#else
       meta_tag_.Set(call_.call(),
                     [this](bool ok) {
                       reactor_->OnSendInitialMetadataDone(ok);
                       MaybeDone();
                     },
                     &meta_ops_);
+#endif
+
       meta_ops_.SendInitialMetadata(&ctx_->initial_metadata_,
                                     ctx_->initial_metadata_flags());
       if (ctx_->compression_level_set()) {
@@ -1125,20 +1223,45 @@ class CallbackBidiHandler : public grpc::internal::MethodHandler {
           call_(*call),
           call_requester_(std::move(call_requester)),
           reactor_(reactor) {
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+      ctx_->BeginCompletionOp(call, ctx_BeginCompletionOp_Functor(this), reactor);
+#else
       ctx_->BeginCompletionOp(call, [this](bool) { MaybeDone(); }, reactor);
+#endif
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+      write_tag_.Set(call_.call(), write_tag_Set_Functor(this), & write_ops_);
+#else
       write_tag_.Set(call_.call(),
                      [this](bool ok) {
                        reactor_->OnWriteDone(ok);
                        MaybeDone();
                      },
                      &write_ops_);
+#endif
       write_ops_.set_core_cq_tag(&write_tag_);
+
+// --wladt--
+// Workaround for GCC 4.7.2 compiler issue:
+// internal compiler error: in get_expr_operands, at tree-ssa-operands.c:1035
+#if PFS_GCC_47_COMPILER_ERROR_1035
+      read_tag_.Set(call_.call(), read_tag_Set_Functor(this), & read_ops_);
+#else
       read_tag_.Set(call_.call(),
                     [this](bool ok) {
                       reactor_->OnReadDone(ok);
                       MaybeDone();
                     },
                     &read_ops_);
+#endif
+
       read_ops_.set_core_cq_tag(&read_tag_);
     }
     ~ServerCallbackReaderWriterImpl() {}

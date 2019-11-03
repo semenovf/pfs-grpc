@@ -374,7 +374,7 @@ class LoadBalancingPolicy : public InternallyRefCounted<LoadBalancingPolicy> {
   class TransientFailurePicker : public SubchannelPicker {
    public:
     explicit TransientFailurePicker(grpc_error* error) : error_(error) {}
-    ~TransientFailurePicker() noexcept override { GRPC_ERROR_UNREF(error_); }
+    ~TransientFailurePicker() noexcept { GRPC_ERROR_UNREF(error_); }
 
     PickResult Pick(PickArgs args) override;
 

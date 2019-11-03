@@ -27,7 +27,7 @@ class grpc_google_iam_credentials : public grpc_call_credentials {
  public:
   grpc_google_iam_credentials(const char* token,
                               const char* authority_selector);
-  ~grpc_google_iam_credentials() noexcept override;
+  ~grpc_google_iam_credentials() noexcept;
 
   bool get_request_metadata(grpc_polling_entity* pollent,
                             grpc_auth_metadata_context context,
