@@ -36,6 +36,14 @@ foreach (_pfs_grpc_proto_src ${PROTOBUF_SOURCES})
 endforeach()
 
 ################################################################################
+# Create Protobuf output directory
+################################################################################
+file(MAKE_DIRECTORY ${pfs_grpc_PROTOBUF_OUTPUT_DIRECTORY})
+#add_custom_target(build-time-make-directory ALL
+#    COMMAND ${CMAKE_COMMAND} -E make_directory ${pfs_grpc_PROTOBUF_OUTPUT_DIRECTORY})
+#    DEPENDS ${pfs_grpc_PROTOBUF_SOURCES})
+
+################################################################################
 # Generate gRPC-specific source codes
 ################################################################################
 add_custom_command(COMMAND ${pfs_grpc_PROTOC_BIN}
