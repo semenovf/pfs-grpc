@@ -3,11 +3,11 @@ cmake_minimum_required (VERSION 3.5.1) # Minimal version for gRPC
 # Workaround for GCC 4.7.2
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
     include(CheckCXXSourceCompiles)
-    include(cmake/cxx_gxx_permissive.cmake)
-    include(cmake/cxx11_is_trivially_destructible.cmake)
-    include(cmake/cxx11_map_emplace.cmake)
-    include(cmake/cxx11_unordered_map_emplace.cmake)
-    include(cmake/cxx11_gcc_47_compiler_error_1035.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/cxx_gxx_permissive.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/cxx11_is_trivially_destructible.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/cxx11_map_emplace.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/cxx11_unordered_map_emplace.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/cmake/cxx11_gcc_47_compiler_error_1035.cmake)
 endif()
 
 set(pfs_grpc_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
