@@ -12,12 +12,20 @@ add_library(catch SHARED $<TARGET_OBJECTS:CATCH_OBJLIB>)
 Generate_gRPC(${CMAKE_CURRENT_SOURCE_DIR}/async
     PREFIX proto
     PROTOS async.proto)
-
 add_executable(test-async async/async.cpp ${pfs_grpc_SOURCES})
 link_directories(${pfs_grpc_LIBRARY_DIRS})
 target_include_directories(test-async PRIVATE ${pfs_grpc_INCLUDE_DIRS})
 target_link_libraries(test-async catch ${pfs_grpc_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME async COMMAND test-async)
+
+Generate_gRPC(${CMAKE_CURRENT_SOURCE_DIR}/connection_recovery
+    PREFIX proto
+    PROTOS connection_recovery.proto)
+add_executable(test-connection_recovery connection_recovery/connection_recovery.cpp ${pfs_grpc_SOURCES})
+link_directories(${pfs_grpc_LIBRARY_DIRS})
+target_include_directories(test-connection_recovery PRIVATE ${pfs_grpc_INCLUDE_DIRS})
+target_link_libraries(test-connection_recovery ${pfs_grpc_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+add_test(NAME connection_recovery COMMAND test-connection_recovery)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 add_executable(test-type_traits type_traits.cpp catch)

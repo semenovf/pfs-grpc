@@ -10,6 +10,7 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/support/async_stream.h>
 #include <grpcpp/support/async_unary_call.h>
+#include <grpcpp/impl/codegen/time.h>
 #include <functional>
 #include <memory>
 #include <string>
@@ -395,14 +396,44 @@ protected:
     grpc_completion_queue _cqueue;
 
 public:
-//     explicit async_client (std::unique_ptr<stub_type> && stub)
-//         : _stub(std::forward<std::unique_ptr<stub_type>>(stub))
-//     {}
+    async_client () {}
 
     async_client (std::string const & server_addr
             , grpc_credentials_pointer const & creds = ::grpc::InsecureChannelCredentials())
         : _stub(ServiceType::NewStub(::grpc::CreateChannel(server_addr, creds)))
     {}
+
+    ~async_client ()
+    {
+        disconnect();
+    }
+
+    /**
+     * Connect to server @a server_addr using credentials @a creds.
+     *
+     * @return @c true if connection established successfully, @c false otherwise.
+     */
+    bool connect (std::string const & server_addr
+            , int millis = 15000
+            , grpc_credentials_pointer const & creds = ::grpc::InsecureChannelCredentials())
+    {
+        auto channel = ::grpc::CreateChannel(server_addr, creds);
+
+        std::chrono::system_clock::time_point tp = std::chrono::system_clock::now()
+                + std::chrono::milliseconds(millis);
+
+        if (channel->WaitForConnected(tp)) {
+            _stub = ServiceType::NewStub(channel);
+            return true;
+        }
+
+        return false;
+    }
+
+    void disconnect ()
+    {
+        _cqueue.Shutdown();
+    }
 
     template <typename RequestType, typename ResponseType>
     bool call (RequestType const & request

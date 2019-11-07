@@ -1,0 +1,15 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2019 Vladislav Trifochkin
+//
+// This file is part of [pfs-grpc](https://github.com/semenovf/pfs-grpc) library.
+////////////////////////////////////////////////////////////////////////////////
+syntax = "proto3";
+
+package PingPongNs;
+
+service PingPongService {
+    rpc PingPong(Ping) returns (Pong) {}
+}
+
+message Ping {}
+message Pong {}

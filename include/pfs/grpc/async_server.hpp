@@ -135,8 +135,11 @@ public:
 
     virtual void process_request (bool ok) override
     {
-        // FIXME Handle error
-        GPR_ASSERT(ok);
+        // Request cancelled
+        if (!ok) {
+            delete this;
+            return;
+        }
 
         if (! this->_complete) {
             // Spawn a new 'async_unary_method' instance to serve new clients
@@ -445,8 +448,28 @@ protected:
     server_pointer _server;
     service_type _service;
 
+private:
+    void shutdown ()
+    {
+        _server->Shutdown();
+        _cqueue->Shutdown();
+    }
+
 public:
+    async_server () {}
+
     async_server (std::string const & server_addr
+            , server_credentials_pointer creds = ::grpc::InsecureServerCredentials())
+    {
+        listen(server_addr, creds);
+    }
+
+    ~async_server ()
+    {
+        shutdown();
+    }
+
+    bool listen (std::string const & server_addr
             , server_credentials_pointer creds = ::grpc::InsecureServerCredentials())
     {
         server_builder builder;
@@ -464,31 +487,30 @@ public:
 
         // Finally assemble the server.
         _server = builder.BuildAndStart();
+
+        return static_cast<bool>(_server);
     }
 
-    ~async_server ()
-    {
-        _server->Shutdown();
-        _cqueue->Shutdown();
-    }
-
-    // There is no shutdown handling in this code.
-    void run ()
+    void run (std::function<bool ()> finish = [] () -> bool { return false; })
     {
         void * tag;  // uniquely identifies a request.
         bool ok;
 
         while (true) {
-            // Block waiting to read the next event from the completion queue. The
-            // event is uniquely identified by its tag, which in this case is the
-            // memory address of a CallData instance.
-            // The return value of Next should always be checked. This return value
-            // tells us whether there is any kind of event or _cqueue is shutting down.
+            std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now()
+                + std::chrono::milliseconds(100);
 
-            // TODO
-            GPR_ASSERT(_cqueue->Next(& tag, & ok));
+            auto status = _cqueue->AsyncNext(& tag, & ok, deadline);
 
-            static_cast<basic_async_method<ServiceClass> *>(tag)->process_request(ok);
+            if (status == ::grpc::CompletionQueue::GOT_EVENT)
+                static_cast<basic_async_method<ServiceClass> *>(tag)->process_request(ok);
+            else if (status == ::grpc::CompletionQueue::SHUTDOWN)
+                break;
+            else if (status == ::grpc::CompletionQueue::TIMEOUT)
+                ;
+
+            if (finish())
+                shutdown();
         }
     }
 
