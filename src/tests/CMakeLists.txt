@@ -19,7 +19,6 @@ target_include_directories(test-async PRIVATE ${pfs_grpc_INCLUDE_DIRS})
 target_link_libraries(test-async catch ${pfs_grpc_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_test(NAME async COMMAND test-async)
 
-
 include_directories(${CMAKE_SOURCE_DIR}/include)
 add_executable(test-type_traits type_traits.cpp catch)
 target_link_libraries(test-type_traits catch)
