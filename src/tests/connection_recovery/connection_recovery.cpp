@@ -13,13 +13,22 @@
 #include <mutex>
 #include <condition_variable>
 #include <thread>
+#include <cassert>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <unistd.h>
 
-static std::string const SERVER_ADDR = "localhost:1521";
+static unsigned short int SERVER_PORT = 1521;
+static std::string const SERVER_NAME = "127.0.0.1";
+static std::string const SERVER_ADDR = "localhost:" + std::to_string(SERVER_PORT);
 static std::mutex client_mutex;
 static std::mutex server_mutex;
 static std::condition_variable client_cv;
 static std::condition_variable server_cv;
 static std::atomic_flag finish_server_flag = ATOMIC_FLAG_INIT;
+static std::atomic_flag finish_client_flag = ATOMIC_FLAG_INIT;
 
 inline std::ostream & client_log ()
 {
@@ -38,18 +47,6 @@ void sleep (int seconds)
     std::this_thread::sleep_for(std::chrono::seconds(seconds));
 }
 
-inline void finish_server ()
-{
-    finish_server_flag.test_and_set();
-}
-
-inline bool finish_server_predicate ()
-{
-    auto result = finish_server_flag.test_and_set();
-    finish_server_flag.clear();
-    return result;
-}
-
 // package PingPongNs____________________________________________
 // service PingPongService { ... _______________________________|_____________
 //                                                              |            |
@@ -59,6 +56,8 @@ class concrete_async_server : public pfs::grpc::async_server<PingPongNs::PingPon
     using base_class = pfs::grpc::async_server<PingPongNs::PingPongService>;
     using service_class = base_class::service_class;
     using service_type = base_class::service_type;
+
+    bool _pong_activated = false;
 
 public:
     concrete_async_server () : base_class() {}
@@ -75,7 +74,7 @@ public:
         using request_type = PingPongNs::Ping;
 
 //  rpc PingPong(Ping) returns (Pong) {}
-//                                |__________
+//                               |___________
 //                                          |
 //                                          v
         using response_type = PingPongNs::Pong;
@@ -87,6 +86,7 @@ public:
 
         auto f = [this] (request_type const &, response_type *) {
             server_log() << "ping\n";
+            _pong_activated = true;
         };
 
         server_log() << "pong\n";
@@ -116,6 +116,19 @@ public:
         _last_pong_time_point = std::chrono::system_clock::now();
     }
 
+    bool server_timedout () const
+    {
+        auto now = std::chrono::system_clock::now();
+
+//         if (now < _last_pong_time_point)
+//             return true;
+//
+//         if (now - _last_pong_time_point > std::chrono::seconds(5))
+//             return true;
+
+        return false;
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
 // rpc PingPong(Ping) returns (Pong) {}
 ////////////////////////////////////////////////////////////////////////////////
@@ -135,10 +148,81 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+bool server_is_alive ()
+{
+    sockaddr_in  serveraddr4;
+    memset(& serveraddr4, 0, sizeof(serveraddr4));
+    serveraddr4.sin_family = AF_INET;
+    serveraddr4.sin_port   = htons(SERVER_PORT);
+    assert(inet_pton(AF_INET, SERVER_NAME.c_str(), & serveraddr4.sin_addr.s_addr) > 0);
+
+    auto fd = ::socket(AF_INET, SOCK_STREAM, 0);
+    auto rc = ::connect(fd, reinterpret_cast<sockaddr *>(& serveraddr4), sizeof(serveraddr4));
+
+    bool result = true;
+
+    if (rc < 0) {
+        if (errno == ECONNREFUSED)
+            result = false;
+    }
+
+    ::close(fd);
+
+    return result;
+}
+
+inline void check_server_alive (int counter)
+{
+    if (server_is_alive())
+        client_log() << "#" << counter << ": server is ALIVE\n";
+    else
+        client_log() << "#" << counter << ": server is not ALIVE\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+inline void finish_server ()
+{
+    finish_server_flag.test_and_set();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+inline void finish_client ()
+{
+    finish_client_flag.test_and_set();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+inline bool finish_server_predicate ()
+{
+    auto result = finish_server_flag.test_and_set();
+    finish_server_flag.clear();
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+inline bool finish_client_predicate ()
+{
+    auto result = finish_client_flag.test_and_set();
+    finish_client_flag.clear();
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // client
 ////////////////////////////////////////////////////////////////////////////////
 void client ()
 {
+    int counter = 0;
     concrete_async_client client;
 
     client_log() << "attempt to connect server while it is not started\n";
@@ -150,12 +234,12 @@ void client ()
     client_log() << "notify server to start\n";
 
     // Notify to run server
-    server_cv.notify_one();
+    client_cv.notify_one();
 
     client_log() << "waiting for server started ...\n";
 
     std::unique_lock<std::mutex> locker(server_mutex);
-    client_cv.wait(locker);
+    server_cv.wait(locker);
 
     client_log() << "server started\n";
 
@@ -163,10 +247,52 @@ void client ()
         client_log() << "connection failure\n";
     }
 
+    check_server_alive(++counter);
+
+    std::thread client_reader { [& client] {
+        client_log() << "start process responses\n";
+        client.process(finish_client_predicate/* [& client] () -> bool {
+            return client.server_timedout();
+        }*/);
+        client_log() << "finished process responses\n";
+    }};
+
+    check_server_alive(++counter);
     client.ping();
 
     client_log() << "finishing server\n";
+    check_server_alive(++counter);
     finish_server();
+
+    client_log() << "waiting for server finished ...\n";
+    server_cv.wait(locker);
+    client_log() << "server finished\n";
+
+    check_server_alive(++counter);
+
+    for (int i = 0; i < 2; i++) {
+        client.ping();
+        sleep(1);
+    }
+
+    check_server_alive(++counter);
+
+    // Notify to run server
+    client_cv.notify_one();
+
+    client_log() << "waiting for server started ...\n";
+    server_cv.wait(locker);
+    client_log() << "server started\n";
+
+    check_server_alive(++counter);
+
+    for (int i = 0; i < 10; i++) {
+        client.ping();
+        sleep(1);
+    }
+
+    finish_server();
+    client_reader.join();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,15 +300,17 @@ void client ()
 ////////////////////////////////////////////////////////////////////////////////
 void server ()
 {
-    concrete_async_server * server = nullptr;
+    std::unique_ptr<concrete_async_server> server;
     bool server_started = false;
 
+    // Wait while client notify to start server
+    server_log() << "waiting for notification to start ...\n";
     std::unique_lock<std::mutex> locker(client_mutex);
-    server_cv.wait(locker);
+    client_cv.wait(locker);
 
     server_log() << "starting ...\n";
 
-    server = new concrete_async_server;
+    server.reset(new concrete_async_server);
 
     if (server->listen(SERVER_ADDR)) {
         server_started = true;
@@ -192,15 +320,42 @@ void server ()
         server_log() << "starting failure\n";
     }
 
-    // Notify client server started (or not)
-    client_cv.notify_one();
+    // Notify client that server started (or not)
+    server_cv.notify_one();
 
     if (server_started) {
         server_log() << "run\n";
         server->run(finish_server_predicate);
-    } else {
-        return;
+        server_log() << "finished\n";
+        server.reset(nullptr);
     }
+
+    server_cv.notify_one();
+
+    client_cv.wait(locker);
+
+    server_log() << "starting ...\n";
+
+    server.reset(new concrete_async_server);
+
+    if (server->listen(SERVER_ADDR)) {
+        server_started = true;
+        server->register_ping();
+        server_log() << "started\n";
+    } else {
+        server_log() << "starting failure\n";
+    }
+
+    server_cv.notify_one();
+
+    if (server_started) {
+        server_log() << "run\n";
+        server->run(finish_server_predicate);
+        server_log() << "finished\n";
+        server.reset(nullptr);
+    }
+
+    finish_client();
 }
 
 int main ()

@@ -451,8 +451,13 @@ protected:
 private:
     void shutdown ()
     {
-        _server->Shutdown();
-        _cqueue->Shutdown();
+        if (_server) {
+            _server->Shutdown();
+        }
+
+        if (_cqueue) {
+            _cqueue->Shutdown();
+        }
     }
 
 public:

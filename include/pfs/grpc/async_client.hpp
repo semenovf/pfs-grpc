@@ -393,7 +393,7 @@ protected:
     using stub_type = typename ServiceType::Stub;
 
     std::unique_ptr<stub_type> _stub;
-    grpc_completion_queue _cqueue;
+    std::unique_ptr<grpc_completion_queue> _cqueue;
 
 public:
     async_client () {}
@@ -401,11 +401,18 @@ public:
     async_client (std::string const & server_addr
             , grpc_credentials_pointer const & creds = ::grpc::InsecureChannelCredentials())
         : _stub(ServiceType::NewStub(::grpc::CreateChannel(server_addr, creds)))
-    {}
+    {
+        connect(server_addr, 15000, creds);
+    }
 
     ~async_client ()
     {
         disconnect();
+    }
+
+    bool connected () const
+    {
+        return static_cast<bool>(_cqueue);
     }
 
     /**
@@ -424,6 +431,8 @@ public:
 
         if (channel->WaitForConnected(tp)) {
             _stub = ServiceType::NewStub(channel);
+            _cqueue.reset(new grpc_completion_queue);
+
             return true;
         }
 
@@ -432,7 +441,13 @@ public:
 
     void disconnect ()
     {
-        _cqueue.Shutdown();
+        if (_cqueue) {
+            _cqueue->Shutdown();
+            _cqueue.reset(nullptr);
+        }
+
+        if (_stub)
+            _stub.reset(nullptr);
     }
 
     template <typename RequestType, typename ResponseType>
@@ -452,7 +467,7 @@ public:
         auto rpc((_stub.get()->* prepareAsyncReader)(
                   & c->context()
                 , request
-                , & _cqueue));
+                , & *_cqueue));
         c->prepare_async(std::move(rpc)
                 , std::forward<typename async_type::response_handler>(on_response));
 
@@ -474,7 +489,7 @@ public:
         auto rpc((_stub.get()->* prepareAsyncReader)(
                   & c->context()
                 , request
-                , & _cqueue));
+                , & *_cqueue));
         c->prepare_async(std::move(rpc)
                 , std::forward<typename async_type::response_handler>(on_response));
 
@@ -496,7 +511,7 @@ public:
         auto rpc((_stub.get()->* prepareAsyncWriter)(
                   & c->context()
                 , & c->response()
-                , & _cqueue));
+                , & *_cqueue));
         c->prepare_async(std::move(rpc)
                 , std::forward<typename async_type::response_handler>(on_response));
 
@@ -516,7 +531,7 @@ public:
         auto c = new async_type(std::forward<std::list<RequestType>>(requests));
         auto rpc((_stub.get()->* prepareAsyncReaderWriter)(
                   & c->context()
-                , & _cqueue));
+                , & *_cqueue));
         c->prepare_async(std::move(rpc)
                 , std::forward<typename async_type::response_handler>(on_response));
 
@@ -538,24 +553,36 @@ public:
         auto rpc((_stub.get()->* prepareAsyncReader)(
                   & c->context()
                 , request
-                , & _cqueue));
+                , & *_cqueue));
         c->prepare_async(std::move(rpc)
                 , std::forward<typename async_type::response_handler>(on_response));
 
         return true;
     }
 
-    void process ()
+    void process (std::function<bool ()> finish = [] () -> bool { return false; })
     {
         void * tag;
         bool ok = false;
 
-        // Block until the next result is available in the completion queue "cq".
-        // The return value of Next should always be checked. This return value
-        // tells us whether there is any kind of event or the cq_ is shutting down.
-        while (_cqueue.Next(& tag, & ok)) {
-            auto response = static_cast<basic_async *>(tag);
-            response->process_response(ok);
+        while (true) {
+            std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now()
+                + std::chrono::milliseconds(100);
+
+            auto status = _cqueue->AsyncNext(& tag, & ok, deadline);
+
+            if (status == ::grpc::CompletionQueue::GOT_EVENT) {
+                auto response = static_cast<basic_async *>(tag);
+                response->process_response(ok);
+            } else if (status == ::grpc::CompletionQueue::SHUTDOWN) {
+                break;
+            } else if (status == ::grpc::CompletionQueue::TIMEOUT) {
+                ;
+            }
+
+            if (finish()) {
+                break;
+            }
         }
     }
 };
