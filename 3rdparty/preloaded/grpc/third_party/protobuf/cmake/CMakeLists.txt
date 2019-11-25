@@ -29,10 +29,19 @@ else()
 endif()
 
 # Options
-option(protobuf_BUILD_TESTS "Build tests" ON)
+option(protobuf_BUILD_TESTS "Build tests" OFF) # set to OFF by --wladt--
 option(protobuf_BUILD_CONFORMANCE "Build conformance tests" OFF)
 option(protobuf_BUILD_EXAMPLES "Build examples" OFF)
-option(protobuf_BUILD_PROTOC_BINARIES "Build libprotoc and protoc compiler" ON)
+
+# --wladt--
+if (ANDROID)
+    option(protobuf_BUILD_PROTOC_BINARIES "Build libprotoc and protoc compiler" OFF)
+else()
+    option(protobuf_BUILD_PROTOC_BINARIES "Build libprotoc and protoc compiler" ON)
+endif()
+
+
+
 if (BUILD_SHARED_LIBS)
   set(protobuf_BUILD_SHARED_LIBS_DEFAULT ON)
 else (BUILD_SHARED_LIBS)
@@ -215,10 +224,16 @@ endif (protobuf_UNICODE)
 
 include(libprotobuf-lite.cmake)
 include(libprotobuf.cmake)
-if (protobuf_BUILD_PROTOC_BINARIES)
-  include(libprotoc.cmake)
-  include(protoc.cmake)
-endif (protobuf_BUILD_PROTOC_BINARIES)
+
+# --wladt--
+if (ANDROID)
+    include(libprotoc.cmake)
+else()
+    if (protobuf_BUILD_PROTOC_BINARIES)
+        include(libprotoc.cmake)
+        include(protoc.cmake)
+    endif (protobuf_BUILD_PROTOC_BINARIES)
+endif()
 
 if (protobuf_BUILD_TESTS)
   include(tests.cmake)

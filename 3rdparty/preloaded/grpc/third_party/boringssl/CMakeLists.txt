@@ -20,23 +20,25 @@ include(sources.cmake)
 enable_language(C)
 enable_language(CXX)
 
-if(ANDROID)
-  # Android-NDK CMake files reconfigure the path and so Go and Perl won't be
-  # found. However, ninja will still find them in $PATH if we just name them.
-  if(NOT PERL_EXECUTABLE)
-    set(PERL_EXECUTABLE "perl")
-  endif()
-  if(NOT GO_EXECUTABLE)
-    set(GO_EXECUTABLE "go")
-  endif()
-else()
-  find_package(Perl REQUIRED)
-  find_program(GO_EXECUTABLE go)
+#--wladt--
+#if(ANDROID)
+#  # Android-NDK CMake files reconfigure the path and so Go and Perl won't be
+#  # found. However, ninja will still find them in $PATH if we just name them.
+if(NOT PERL_EXECUTABLE)
+  set(PERL_EXECUTABLE "perl")
 endif()
+#  if(NOT GO_EXECUTABLE)
+#    set(GO_EXECUTABLE "go")
+#  endif()
+#else()
+#  find_package(Perl REQUIRED)
+#  find_program(GO_EXECUTABLE go)
+#endif()
 
-if (NOT GO_EXECUTABLE)
-  message(FATAL_ERROR "Could not find Go")
-endif()
+#--wladt--
+#if (NOT GO_EXECUTABLE)
+#  message(FATAL_ERROR "Could not find Go")
+#endif()
 
 if (BORINGSSL_ALLOW_CXX_RUNTIME)
   add_definitions(-DBORINGSSL_ALLOW_CXX_RUNTIME)

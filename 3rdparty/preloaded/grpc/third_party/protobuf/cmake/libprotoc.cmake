@@ -167,7 +167,18 @@ endif()
 
 add_library(libprotoc ${protobuf_SHARED_OR_STATIC}
   ${libprotoc_files} ${libprotoc_headers} ${libprotoc_rc_files})
-target_link_libraries(libprotoc libprotobuf)
+
+# --wladt--
+# target_link_libraries(libprotoc libprotobuf)
+
+# --wladt-- {
+if (ANDROID)
+    target_link_libraries(libprotoc libprotobuf log)
+else()
+    target_link_libraries(libprotoc libprotobuf)
+endif(ANDROID)
+# } --wladt--
+
 if(MSVC AND protobuf_BUILD_SHARED_LIBS)
   target_compile_definitions(libprotoc
     PUBLIC  PROTOBUF_USE_DLLS

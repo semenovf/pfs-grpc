@@ -64,6 +64,22 @@ else()
     set(pfs_grpc_CPP_PLUGIN_PATH "${_pfs_grpc_GRPC_BINARY_DIR}/grpc_cpp_plugin")
 endif()
 
+if (ANDROID)
+    if (NOT CUSTOM_PROTOC)
+        set(pfs_grpc_PROTOC_BIN "${CMAKE_BINARY_DIR}/protoc")
+    else()
+        set(pfs_grpc_PROTOC_BIN "${CUSTOM_PROTOC}")
+    endif()
+
+    if (NOT CUSTOM_GRPC_CPP_PLUGIN)
+        set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_BINARY_DIR}/grpc_cpp_plugin")
+    else()
+        set(pfs_grpc_CPP_PLUGIN_PATH "${CUSTOM_GRPC_CPP_PLUGIN}")
+    endif()
+
+    set(_gRPC_PROTOBUF_PROTOC_EXECUTABLE ${pfs_grpc_PROTOC_BIN})
+endif(ANDROID)
+
 # OUTPUT VARIABLE: Protobuf compiler
 set(pfs_protobuf_PROTOC_BIN ${pfs_grpc_PROTOC_BIN})
 

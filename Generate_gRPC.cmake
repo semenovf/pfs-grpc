@@ -69,7 +69,7 @@ function (Generate_gRPC)
             --plugin=protoc-gen-grpc=\"${pfs_grpc_CPP_PLUGIN_PATH}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_grpc_OUTPUT}
-        DEPENDS ${_pfs_grpc_PROTOS} protobuf::protoc)
+        DEPENDS ${_pfs_grpc_PROTOS}) # protobuf::protoc)
 
     ################################################################################
     # Generate Protobuf-specific source codes
@@ -79,7 +79,7 @@ function (Generate_gRPC)
             --cpp_out=\"${_pfs_grpc_SOURCES_DIRECTORY}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_protobuf_OUTPUT}
-        DEPENDS ${_pfs_grpc_PROTOS} protobuf::protoc)
+        DEPENDS ${_pfs_grpc_PROTOS}) # protobuf::protoc)
 
     # OUTPUT VARIABLE: Include directories
     set(pfs_grpc_INCLUDE_DIRS

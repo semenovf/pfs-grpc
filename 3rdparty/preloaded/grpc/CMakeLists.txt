@@ -22,7 +22,11 @@
 
 
 cmake_minimum_required(VERSION 3.5.1)
-cmake_policy(SET CMP0071 NEW) # --wladt--
+
+# Added by --wladt--
+if(POLICY CMP0071)
+  cmake_policy(SET CMP0071 NEW)
+endif()
 
 set(PACKAGE_NAME      "grpc")
 set(PACKAGE_VERSION   "1.25.0-dev")

@@ -1,10 +1,6 @@
 include_directories(../../include)
 
-add_library(
-  asn1
-
-  OBJECT
-
+add_library(asn1 OBJECT
   a_bitstr.c
   a_bool.c
   a_d2i_fp.c
