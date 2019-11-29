@@ -2,6 +2,8 @@ project(pfs-io-tests CXX)
 
 find_package(Threads REQUIRED)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 # This is the "object library" target: compiles the sources only once
 add_library(CATCH_OBJLIB OBJECT catch-main.cpp)
 

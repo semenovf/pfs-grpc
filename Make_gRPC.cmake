@@ -16,6 +16,8 @@
 
 cmake_minimum_required (VERSION 3.5.1) # Minimal version for gRPC
 
+option(FORCE_PRELOADED_GRPC "Force process preloaded version of gRPC" OFF)
+
 # Workaround for GCC 4.7.2
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
     include(CheckCXXSourceCompiles)
@@ -34,7 +36,7 @@ set(pfs_grpc_BINARY_DIR "${CMAKE_BINARY_DIR}/pfs-grpc")
 
 # Submodules downloaded (allow use of last version of gRPC library and
 # it's dependences)
-if (EXISTS "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc/CMakeLists.txt")
+if (NOT FORCE_PRELOADED_GRPC AND EXISTS "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc/CMakeLists.txt")
     # OUTPUT VARIABLE: root gRPC source directory
     set(pfs_grpc_GRPC_SOURCE_DIR "${pfs_grpc_SOURCE_DIR}/3rdparty/grpc")
 

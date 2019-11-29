@@ -1,6 +1,7 @@
 !.gitignore
 
 .settings/
+.vs
 .build*/
 build*/
 .kdev4/
