@@ -7,9 +7,13 @@ syntax = "proto3";
 
 package TestRpc;
 
+
 service TestService {
     // Simple RPC
-    rpc Start(StartService) returns (ServiceStatus) {}
+
+    // StartService is defined as macro in winsvc.h, so it was cause compile error
+    // in Windows (valid for MSVC 2015 at least)
+    rpc Start(StartServiceRequest) returns (ServiceStatus) {}
     rpc Stop(StopService) returns (ServiceStatus) {}
 
     // Server-side streaming RPC
@@ -22,11 +26,13 @@ service TestService {
     rpc StartModules(stream StartModule) returns (stream ModuleStatus) {}
 }
 
+// SERVICE_STOPPED is defined as macro in winsvc.h, so it was cause compile error
+// in Windows (valid for MSVC 2015 at least)
 enum ServiceStatusEnum {
-    SERVICE_STARTED         = 0;
-    SERVICE_STOPPED         = 1;
-    SERVICE_ALREADY_STARTED = 2;
-    SERVICE_START_FAILED    = 3;
+    TEST_SERVICE_STARTED         = 0;
+    TEST_SERVICE_STOPPED         = 1;
+    TEST_SERVICE_ALREADY_STARTED = 2;
+    TEST_SERVICE_START_FAILED    = 3;
 }
 
 enum ModuleStatusEnum {
@@ -34,7 +40,7 @@ enum ModuleStatusEnum {
     MODULE_DEACTIVATED = 1;
 }
 
-message StartService {
+message StartServiceRequest {
 }
 
 message StopService {

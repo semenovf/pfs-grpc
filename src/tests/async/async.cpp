@@ -25,7 +25,7 @@ struct Module {
 struct Service
 {
     std::map<std::string, Module> modules;
-    ::TestRpc::ServiceStatusEnum status = ::TestRpc::SERVICE_STOPPED;
+    ::TestRpc::ServiceStatusEnum status = ::TestRpc::TEST_SERVICE_STOPPED;
 };
 
 inline std::string to_string (::TestRpc::ModuleStatusEnum status)
@@ -41,10 +41,10 @@ inline std::string to_string (::TestRpc::ModuleStatusEnum status)
 inline std::string to_string (::TestRpc::ServiceStatusEnum status)
 {
     switch (status) {
-        case ::TestRpc::SERVICE_STARTED: return "STARTED";
-        case ::TestRpc::SERVICE_STOPPED: return "STOPPED";
-        case ::TestRpc::SERVICE_ALREADY_STARTED: return "ALREADY_STARTED";
-        case ::TestRpc::SERVICE_START_FAILED: return "START_FAILED";
+        case ::TestRpc::TEST_SERVICE_STARTED: return "STARTED";
+        case ::TestRpc::TEST_SERVICE_STOPPED: return "STOPPED";
+        case ::TestRpc::TEST_SERVICE_ALREADY_STARTED: return "ALREADY_STARTED";
+        case ::TestRpc::TEST_SERVICE_START_FAILED: return "START_FAILED";
         default: break;
     }
     return "<unknown-service-status>";
@@ -76,13 +76,13 @@ public:
 
     void register_Start ()
     {
-//  rpc Start(StartService) returns (ServiceStatus) {}
+//  rpc Start(StartServiceRequest) returns (ServiceStatus) {}
 //                 |________________________
 //                                         |
 //                                         v
-        using request_type = TestRpc::StartService;
+        using request_type = TestRpc::StartServiceRequest;
 
-//  rpc CallStart(StartService) returns (ServiceStatus) {}
+//  rpc Start(StartServiceRequest) returns (ServiceStatus) {}
 //                                           |
 //                                           v
         using response_type = TestRpc::ServiceStatus;
@@ -93,17 +93,17 @@ public:
                 , response_type>;
 
         auto f = [this] (request_type const &, response_type * response) {
-            std::cout << "server: StartService request\n";
+            std::cout << "server: StartServiceRequest request\n";
 
-            if (_service.status == ::TestRpc::SERVICE_STARTED)
-                _service.status = ::TestRpc::SERVICE_ALREADY_STARTED;
+            if (_service.status == ::TestRpc::TEST_SERVICE_STARTED)
+                _service.status = ::TestRpc::TEST_SERVICE_ALREADY_STARTED;
             else
-                _service.status = ::TestRpc::SERVICE_STARTED;
+                _service.status = ::TestRpc::TEST_SERVICE_STARTED;
 
             response->set_status(_service.status);
         };
 
-//  rpc Start(StartService) returns (ServiceStatus) {}
+//  rpc Start(StartServiceRequest) returns (ServiceStatus) {}
 //         |________________________________________________________
 //                                                             |   |
         register_method<request_type, response_type>(//        v   v
@@ -122,7 +122,7 @@ public:
 
         auto f = [this] (request_type const &, response_type * response) {
             std::cout << "server: StopService request\n";
-            _service.status = TestRpc::SERVICE_STOPPED;
+            _service.status = TestRpc::TEST_SERVICE_STOPPED;
             response->set_status(_service.status);
         };
 
@@ -253,21 +253,27 @@ public:
     {}
 
 ////////////////////////////////////////////////////////////////////////////////
-// rpc Start(StartService) returns (ServiceStatus) {}
+// rpc Start(StartServiceRequest) returns (ServiceStatus) {}
 ////////////////////////////////////////////////////////////////////////////////
     bool call_Start ()
     {
         auto f = [] (TestRpc::ServiceStatus const & response) {
-            std::cout << "client: StartService result: "
+            std::cout << "client: StartServiceRequest result: "
                     << "status=" << response.status() << "\n";
         };
 
         // Name 'PrepareAsyncCallStart' generates using concatenation of static
         // string 'PrepareAsync' and rpc name from .proto file ('CallStart').
         // This rule is valid for 'Simple RPC'
-        return this->call(TestRpc::StartService{}
+#if _WIN32
+		return this->call<TestRpc::StartServiceRequest, TestRpc::ServiceStatus>(TestRpc::StartServiceRequest{}
+			, &TestRpc::TestService::Stub::PrepareAsyncStart
+			, pfs::grpc::async_unary<TestRpc::ServiceStatus>::response_handler(f));
+#else
+        return this->call(TestRpc::StartServiceRequest{}
                 , & TestRpc::TestService::Stub::PrepareAsyncStart
                 , pfs::grpc::async_unary<TestRpc::ServiceStatus>::response_handler(f));
+#endif
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -281,9 +287,15 @@ public:
         };
 
         // Same as for 'call_start'
+#if _WIN32
+		return this->call<TestRpc::StopService, TestRpc::ServiceStatus>(TestRpc::StopService{}
+			, &TestRpc::TestService::Stub::PrepareAsyncStop
+			, pfs::grpc::async_unary<TestRpc::ServiceStatus>::response_handler(f));
+#else
         return this->call(TestRpc::StopService{}
                 , & TestRpc::TestService::Stub::PrepareAsyncStop
                 , pfs::grpc::async_unary<TestRpc::ServiceStatus>::response_handler(f));
+#endif
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -301,9 +313,15 @@ public:
             }
         };
 
+#if _WIN32
+		return this->call<TestRpc::GetListModules, response_type>(TestRpc::GetListModules{}
+			, &TestRpc::TestService::Stub::PrepareAsyncListModules
+			, pfs::grpc::async_server_streaming<response_type>::response_handler(f));
+#else
         return this->call(TestRpc::GetListModules{}
                 , & TestRpc::TestService::Stub::PrepareAsyncListModules
                 , pfs::grpc::async_server_streaming<response_type>::response_handler(f));
+#endif
     }
 
 
@@ -331,9 +349,15 @@ public:
                     << "\tcomplete: " << std::boolalpha << response.complete() << "\n";
         };
 
+#if _WIN32
+		return this->call<request_type, response_type>(std::move(requests)
+			, &TestRpc::TestService::Stub::PrepareAsyncSendSegments
+			, pfs::grpc::async_client_streaming<request_type, response_type>::response_handler(f));
+#else
         return this->call(std::move(requests)
                 , & TestRpc::TestService::Stub::PrepareAsyncSendSegments
                 , pfs::grpc::async_client_streaming<request_type, response_type>::response_handler(f));
+#endif
     }
 
     // rpc StartModules(stream StartModule) returns (stream ModuleStatus) {}

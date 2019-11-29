@@ -44,7 +44,10 @@ add_library(
 
 target_link_libraries(ssl crypto)
 
-target_compile_options(ssl PRIVATE "-Wno-error=sign-compare")
+# --wladt--
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_compile_options(ssl PRIVATE "-Wno-error=sign-compare")
+endif()
 
 # --wladt--
 # add_executable(

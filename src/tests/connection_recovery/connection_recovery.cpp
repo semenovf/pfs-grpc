@@ -14,11 +14,17 @@
 #include <condition_variable>
 #include <thread>
 #include <cassert>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <unistd.h>
+
+#if _WIN32
+#	include <winsock2.h>
+#	include <ws2tcpip.h>
+#else
+#	include <sys/types.h>
+#	include <sys/socket.h>
+#	include <arpa/inet.h>
+#	include <netinet/in.h>
+#	include <unistd.h>
+#endif
 
 static unsigned short int SERVER_PORT = 1521;
 static std::string const SERVER_NAME = "127.0.0.1";
@@ -141,9 +147,17 @@ public:
 
         client_log() << "ping\n";
 
-        return this->call(PingPongNs::Ping{}
-                , & PingPongNs::PingPongService::Stub::PrepareAsyncPingPong
-                , pfs::grpc::async_unary<PingPongNs::Pong>::response_handler(f));
+#if _WIN32
+		// Workaround for MSVC 2015 compiler error: could not deduce template
+		// argument for ...
+		return this->call<PingPongNs::Ping, PingPongNs::Pong>(PingPongNs::Ping{}
+			, &PingPongNs::PingPongService::Stub::PrepareAsyncPingPong
+			, pfs::grpc::async_unary<PingPongNs::Pong>::response_handler(f));
+#else
+		return this->call(PingPongNs::Ping{}
+			, &PingPongNs::PingPongService::Stub::PrepareAsyncPingPong
+			, pfs::grpc::async_unary<PingPongNs::Pong>::response_handler(f));
+#endif
     }
 };
 
@@ -168,7 +182,18 @@ bool server_is_alive ()
             result = false;
     }
 
+#if _WIN32
+	// Close the socket to release the resources associated
+	// Normally an application calls shutdown() before closesocket 
+	//   to  disables sends or receives on a socket first
+	shutdown(fd, SD_BOTH);
+	rc = closesocket(fd);
+	if (rc == SOCKET_ERROR) {
+		wprintf(L"closesocket failed with error = %d\n", WSAGetLastError());
+	}
+#else
     ::close(fd);
+#endif
 
     return result;
 }
@@ -360,11 +385,26 @@ void server ()
 
 int main ()
 {
+#if _WIN32
+	WSADATA wsaData = { 0 };
+	// Initialize Winsock
+	int rc = WSAStartup(MAKEWORD(2, 2), & wsaData);
+
+	if (rc != 0) {
+		wprintf(L"WSAStartup failed: %d\n", rc);
+		return 1;
+	}
+#endif
+
     std::thread server_thread { [] { server(); }};
     std::thread client_thread { [] { client(); }};
 
     server_thread.join();
     client_thread.join();
+
+#if _WIN32
+	WSACleanup();
+#endif
 
     return 0;
 }
