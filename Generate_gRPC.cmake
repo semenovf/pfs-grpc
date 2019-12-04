@@ -16,7 +16,7 @@ include(CMakeParseArguments)
 #
 function (Generate_gRPC)
     set(boolparm)
-    set(singleparm PREFIX)
+    set(singleparm PREFIX DLL_API)
     set(multiparm PROTOS)
 
     cmake_parse_arguments(_arg "${boolparm}" "${singleparm}" "${multiparm}" ${ARGN})
@@ -69,17 +69,23 @@ function (Generate_gRPC)
             --plugin=protoc-gen-grpc=\"${pfs_grpc_CPP_PLUGIN_PATH}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_grpc_OUTPUT}
-        DEPENDS ${_pfs_grpc_PROTOS}) # protobuf::protoc)
+        DEPENDS protoc ${pfs_grpc_CPP_PLUGIN_PATH} ${_pfs_grpc_PROTOS})
 
     ################################################################################
     # Generate Protobuf-specific source codes
     ################################################################################
+    if(_arg_DLL_API)
+        set(_pfs_protobuf_CPP_OUT "dllexport_decl=${_arg_DLL_API}:${_pfs_grpc_SOURCES_DIRECTORY}")
+    else(_arg_DLL_API)
+        set(_pfs_protobuf_CPP_OUT ${_pfs_grpc_SOURCES_DIRECTORY})
+    endif(_arg_DLL_API)
+
     add_custom_command(COMMAND ${pfs_grpc_PROTOC_BIN}
             --proto_path=\"${_pfs_grpc_PROTO_DIRECTORY}\"
-            --cpp_out=\"${_pfs_grpc_SOURCES_DIRECTORY}\"
+            --cpp_out=\"${_pfs_protobuf_CPP_OUT}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_protobuf_OUTPUT}
-        DEPENDS ${_pfs_grpc_PROTOS}) # protobuf::protoc)
+        DEPENDS protoc ${_pfs_grpc_PROTOS})
 
     # OUTPUT VARIABLE: Include directories
     set(pfs_grpc_INCLUDE_DIRS
@@ -100,6 +106,5 @@ function (Generate_gRPC)
     # OUTPUT VARIABLE: Libraries
     # Note: gRPC libraries with dependences:
     #       grpc++_reflection grpc gpr address_sorting cares protobuf z
-    set(pfs_grpc_LIBRARIES grpc++
-        PARENT_SCOPE)
+    set(pfs_grpc_LIBRARIES grpc++ PARENT_SCOPE)
 endfunction(Generate_gRPC)

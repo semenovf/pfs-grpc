@@ -14,7 +14,7 @@
 #
 function(Generate_proto)
     set(boolparm)
-    set(singleparm PREFIX)
+    set(singleparm PREFIX DLL_API)
     set(multiparm PROTOS)
 
     cmake_parse_arguments(_arg "${boolparm}" "${singleparm}" "${multiparm}" ${ARGN})
@@ -57,12 +57,18 @@ function(Generate_proto)
     ################################################################################
     # Generate Protobuf-specific source codes
     ################################################################################
+    if (_arg_DLL_API)
+        set(_pfs_protobuf_CPP_OUT "dllexport_decl=${_arg_DLL_API}:${_pfs_protobuf_SOURCES_DIRECTORY}")
+    else(_arg_DLL_API)
+        set(_pfs_protobuf_CPP_OUT ${_pfs_protobuf_SOURCES_DIRECTORY})
+    endif(_arg_DLL_API)
+
     add_custom_command(COMMAND ${pfs_protobuf_PROTOC_BIN}
             --proto_path=\"${_pfs_protobuf_PROTO_DIRECTORY}\"
-            --cpp_out=\"${_pfs_protobuf_SOURCES_DIRECTORY}\"
+            --cpp_out=\"${_pfs_protobuf_CPP_OUT}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_protobuf_OUTPUT}
-        DEPENDS ${_pfs_protobuf_PROTOS})# protobuf::protoc)
+        DEPENDS protoc ${_pfs_protobuf_PROTOS})
 
     # OUTPUT VARIABLE: Include directories
     set(pfs_protobuf_INCLUDE_DIRS
@@ -75,7 +81,5 @@ function(Generate_proto)
         ${CMAKE_BINARY_DIR}/3rdparty/grpc/third_party/protobuf
         PARENT_SCOPE)
 
-    # OUTPUT VARIABLE: Libraries
-    set(pfs_protobuf_LIBRARIES protobuf
-        PARENT_SCOPE)
+    set(pfs_protobuf_LIBRARIES libprotobuf PARENT_SCOPE)
 endfunction(Generate_proto)

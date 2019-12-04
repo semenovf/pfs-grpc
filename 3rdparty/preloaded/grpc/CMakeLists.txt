@@ -769,6 +769,7 @@ endif (gRPC_BUILD_TESTS)
 
 
 add_library(address_sorting
+#  STATIC # --wladt-- (Workaround for Windows)
   third_party/address_sorting/address_sorting.c
   third_party/address_sorting/address_sorting_posix.c
   third_party/address_sorting/address_sorting_windows.c
@@ -854,10 +855,10 @@ target_link_libraries(alts_test_util
   grpc
 )
 
-
 endif (gRPC_BUILD_TESTS)
 
-add_library(gpr
+add_library(gpr 
+#  STATIC # --wladt-- (Workaround for Windows)
   src/core/lib/gpr/alloc.cc
   src/core/lib/gpr/atm.cc
   src/core/lib/gpr/cpu_iphone.cc

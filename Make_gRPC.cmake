@@ -54,54 +54,6 @@ set(pfs_grpc_CODEGEN "${pfs_grpc_SOURCE_DIR}/Generate_gRPC.cmake")
 # OUTPUT VARIABLE: Path to Protobuf codegen cmake file
 set(pfs_protobuf_CODEGEN "${pfs_grpc_SOURCE_DIR}/Generate_proto.cmake")
 
-add_subdirectory(${pfs_grpc_GRPC_SOURCE_DIR} ${_pfs_grpc_GRPC_BINARY_SUBDIR})
-
-# Workaround for GCC 4.7.2
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
-    target_compile_definitions(gpr PRIVATE "-D__STDC_LIMIT_MACROS")
-    target_compile_definitions(grpc PRIVATE "-D__STDC_LIMIT_MACROS")
-    target_compile_definitions(grpc_cronet PRIVATE "-D__STDC_LIMIT_MACROS")
-    target_compile_definitions(grpc_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
-    target_compile_definitions(grpc++ PRIVATE "-D__STDC_LIMIT_MACROS")
-    target_compile_definitions(grpc++_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
-endif()
-
-set_target_properties(protoc PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set_target_properties(grpc_cpp_plugin PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-
-set(pfs_grpc_PROTOC_BIN "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
-set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
-set(_pfs_grpc_GRPC_BINARY_DIR "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}")
-
-#
-# Set paths for executables: `protoc` and `grpc_cpp_plugin`
-#
-#message(FATAL_ERROR "protoc=${_gRPC_PROTOBUF_PROTOC_EXECUTABLE}")
-#set(ASDF $<TARGET_FILE:protoc>)
-#message(FATAL_ERROR "protoc=[${ASDF}]")
-
-#if (NOT ANDROID)
-#	if (DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-#		set(_pfs_grpc_GRPC_BINARY_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#	else()
-#		set(_pfs_grpc_GRPC_BINARY_DIR "${CMAKE_BINARY_DIR}/${_pfs_grpc_GRPC_BINARY_SUBDIR}")
-#	endif()
-#
-#	list(APPEND _pfs_grpc_PROTOC_BIN_COMPONENTS ${_pfs_grpc_GRPC_BINARY_DIR})
-#	list(APPEND _pfs_grpc_CPP_PLUGIN_PATH_COMPONENTS ${_pfs_grpc_GRPC_BINARY_DIR})
-#
-#	if (MSVC)
-#		list(APPEND _pfs_grpc_PROTOC_BIN_COMPONENTS "third_party/protobuf/${CMAKE_BUILD_TYPE}")
-#		list(APPEND _pfs_grpc_CPP_PLUGIN_PATH_COMPONENTS ${CMAKE_BUILD_TYPE})
-#	else()
-#		list(APPEND _pfs_grpc_PROTOC_BIN_COMPONENTS "third_party/protobuf")
-#	endif()
-#
-#	list(APPEND _pfs_grpc_PROTOC_BIN_COMPONENTS "protoc${CMAKE_EXECUTABLE_SUFFIX}")
-#	list(APPEND _pfs_grpc_CPP_PLUGIN_PATH_COMPONENTS "grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
-#
-#	list(JOIN _pfs_grpc_PROTOC_BIN_COMPONENTS "/" pfs_grpc_PROTOC_BIN)
-#	list(JOIN _pfs_grpc_CPP_PLUGIN_PATH_COMPONENTS "/" pfs_grpc_CPP_PLUGIN_PATH)
 if (ANDROID)
    if (NOT CUSTOM_PROTOC)
       set(pfs_grpc_PROTOC_BIN "${CMAKE_BINARY_DIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
@@ -118,6 +70,53 @@ if (ANDROID)
     set(_gRPC_PROTOBUF_PROTOC_EXECUTABLE ${pfs_grpc_PROTOC_BIN})
 endif()
 
+if (MSVC)
+    # Build with multiple processes
+    add_definitions(/MP)
+    # MSVC warning suppressions
+    add_definitions(
+        /wd4018 # 'expression' : signed/unsigned mismatch
+        /wd4800 # 'type' : forcing value to bool 'true' or 'false' (performance warning)
+        /wd4146 # unary minus operator applied to unsigned type, result still unsigned
+        /wd4334 # 'operator' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+        /wd4065 # switch statement contains 'default' but no 'case' labels
+        /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+        /wd4251 # 'identifier' : class 'type' needs to have dll-interface to be used by clients of class 'type2'
+        /wd4267 # 'var' : conversion from 'size_t' to 'type', possible loss of data
+        /wd4305 # 'identifier' : truncation from 'type1' to 'type2'
+        /wd4307 # 'operator' : integral constant overflow
+        /wd4309 # 'conversion' : truncation of constant value
+        /wd4355 # 'this' : used in base member initializer list
+        /wd4506 # no definition for inline function 'function'
+        /wd4996 # The compiler encountered a deprecated declaration.
+    )
+endif(MSVC)
+
+add_subdirectory(${pfs_grpc_GRPC_SOURCE_DIR} ${_pfs_grpc_GRPC_BINARY_SUBDIR})
+
+# Workaround for GCC 4.7.2
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+    target_compile_definitions(gpr PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc_cronet PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc++ PRIVATE "-D__STDC_LIMIT_MACROS")
+    target_compile_definitions(grpc++_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
+endif()
+
+if (NOT ANDROID)
+    if (CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+        set(pfs_grpc_PROTOC_BIN "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
+        set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
+    else()
+        set_target_properties(protoc PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+        set_target_properties(grpc_cpp_plugin PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
+        set(pfs_grpc_PROTOC_BIN "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
+        set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
+    endif()
+endif()
+
 # OUTPUT VARIABLE: Protobuf compiler
 set(pfs_protobuf_PROTOC_BIN ${pfs_grpc_PROTOC_BIN})
 
@@ -125,7 +124,6 @@ message(
 "================================================================================
 Protobuf compiler      : ${pfs_grpc_PROTOC_BIN}
 gRPC source dir        : ${pfs_grpc_GRPC_SOURCE_DIR}
-gRPC binary dir        : ${_pfs_grpc_GRPC_BINARY_DIR}
 gRPC C++ plugin        : ${pfs_grpc_CPP_PLUGIN_PATH}
 gRPC codegen script    : ${pfs_grpc_CODEGEN}
 Protobuf codegen script: ${pfs_protobuf_CODEGEN}

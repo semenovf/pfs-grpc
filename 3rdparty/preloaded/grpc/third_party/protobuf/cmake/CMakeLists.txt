@@ -40,14 +40,13 @@ else()
     option(protobuf_BUILD_PROTOC_BINARIES "Build libprotoc and protoc compiler" ON)
 endif()
 
-
-
 if (BUILD_SHARED_LIBS)
   set(protobuf_BUILD_SHARED_LIBS_DEFAULT ON)
 else (BUILD_SHARED_LIBS)
   set(protobuf_BUILD_SHARED_LIBS_DEFAULT OFF)
 endif (BUILD_SHARED_LIBS)
 option(protobuf_BUILD_SHARED_LIBS "Build Shared Libraries" ${protobuf_BUILD_SHARED_LIBS_DEFAULT})
+message(STATUS "Build shared Libraries for protobuf: [${protobuf_BUILD_SHARED_LIBS}]") # --wladt--
 include(CMakeDependentOption)
 cmake_dependent_option(protobuf_MSVC_STATIC_RUNTIME "Link static runtime libraries" ON
   "NOT protobuf_BUILD_SHARED_LIBS" OFF)
