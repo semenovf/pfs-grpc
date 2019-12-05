@@ -62,9 +62,9 @@ if (ANDROID)
     endif()
 
     if (NOT CUSTOM_GRPC_CPP_PLUGIN)
-        set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_BINARY_DIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
+        set(pfs_grpc_CPP_PLUGIN "${CMAKE_BINARY_DIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
     else()
-        set(pfs_grpc_CPP_PLUGIN_PATH "${CUSTOM_GRPC_CPP_PLUGIN}")
+        set(pfs_grpc_CPP_PLUGIN "${CUSTOM_GRPC_CPP_PLUGIN}")
     endif()
 
     set(_gRPC_PROTOBUF_PROTOC_EXECUTABLE ${pfs_grpc_PROTOC_BIN})
@@ -107,13 +107,13 @@ endif()
 if (NOT ANDROID)
     if (CMAKE_RUNTIME_OUTPUT_DIRECTORY)
         set(pfs_grpc_PROTOC_BIN "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
-        set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
+        set(pfs_grpc_CPP_PLUGIN "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
     else()
         set_target_properties(protoc PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
         set_target_properties(grpc_cpp_plugin PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
         set(pfs_grpc_PROTOC_BIN "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
-        set(pfs_grpc_CPP_PLUGIN_PATH "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
+        set(pfs_grpc_CPP_PLUGIN "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}/grpc_cpp_plugin${CMAKE_EXECUTABLE_SUFFIX}")
     endif()
 endif()
 
@@ -124,7 +124,7 @@ message(
 "================================================================================
 Protobuf compiler      : ${pfs_grpc_PROTOC_BIN}
 gRPC source dir        : ${pfs_grpc_GRPC_SOURCE_DIR}
-gRPC C++ plugin        : ${pfs_grpc_CPP_PLUGIN_PATH}
+gRPC C++ plugin        : ${pfs_grpc_CPP_PLUGIN}
 gRPC codegen script    : ${pfs_grpc_CODEGEN}
 Protobuf codegen script: ${pfs_protobuf_CODEGEN}
 ================================================================================")

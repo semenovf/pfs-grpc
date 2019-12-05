@@ -68,7 +68,7 @@ function(Generate_proto)
             --cpp_out=\"${_pfs_protobuf_CPP_OUT}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_protobuf_OUTPUT}
-        DEPENDS protoc ${_pfs_protobuf_PROTOS})
+        DEPENDS ${pfs_protobuf_PROTOC_BIN} ${_pfs_protobuf_PROTOS})
 
     # OUTPUT VARIABLE: Include directories
     set(pfs_protobuf_INCLUDE_DIRS

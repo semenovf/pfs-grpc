@@ -66,10 +66,10 @@ function (Generate_gRPC)
     add_custom_command(COMMAND ${pfs_grpc_PROTOC_BIN}
             --proto_path=\"${_pfs_grpc_PROTO_DIRECTORY}\"
             --grpc_out=\"${_pfs_grpc_SOURCES_DIRECTORY}\"
-            --plugin=protoc-gen-grpc=\"${pfs_grpc_CPP_PLUGIN_PATH}\"
+            --plugin=protoc-gen-grpc=\"${pfs_grpc_CPP_PLUGIN}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_grpc_OUTPUT}
-        DEPENDS protoc ${pfs_grpc_CPP_PLUGIN_PATH} ${_pfs_grpc_PROTOS})
+        DEPENDS ${pfs_grpc_CPP_PLUGIN} ${_pfs_grpc_PROTOS})
 
     ################################################################################
     # Generate Protobuf-specific source codes
@@ -80,12 +80,15 @@ function (Generate_gRPC)
         set(_pfs_protobuf_CPP_OUT ${_pfs_grpc_SOURCES_DIRECTORY})
     endif(_arg_DLL_API)
 
+    if(ANDROID)
+    endif(ANDROID)
+
     add_custom_command(COMMAND ${pfs_grpc_PROTOC_BIN}
             --proto_path=\"${_pfs_grpc_PROTO_DIRECTORY}\"
             --cpp_out=\"${_pfs_protobuf_CPP_OUT}\"
             ${_arg_PROTOS}
         OUTPUT ${_pfs_protobuf_OUTPUT}
-        DEPENDS protoc ${_pfs_grpc_PROTOS})
+        DEPENDS ${pfs_grpc_PROTOC_BIN} ${_pfs_grpc_PROTOS})
 
     # OUTPUT VARIABLE: Include directories
     set(pfs_grpc_INCLUDE_DIRS

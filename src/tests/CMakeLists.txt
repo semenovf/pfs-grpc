@@ -15,6 +15,8 @@ if (MSVC)
     set_target_properties(catch PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif(MSVC)
 
+include(${pfs_grpc_CODEGEN})
+
 Generate_gRPC(${CMAKE_CURRENT_SOURCE_DIR}/async
     PREFIX proto
     PROTOS async.proto)

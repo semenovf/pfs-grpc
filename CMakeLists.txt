@@ -5,7 +5,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 option(pfs_grpc_BUILD_TESTS "Build tests" ON)
 
 include(Make_gRPC.cmake)
-include(${pfs_grpc_CODEGEN})
 
 if (pfs_grpc_BUILD_TESTS)
     enable_testing()
