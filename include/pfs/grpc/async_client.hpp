@@ -560,25 +560,39 @@ public:
         return true;
     }
 
-    void process (std::function<bool ()> finish = [] () -> bool { return false; })
+    /**
+     * @return ::grpc::CompletionQueue::NextStatus:
+     *      * GOT_EVENT
+     *      * SHUTDOWN
+     *      * TIMEOUT
+     */
+    ::grpc::CompletionQueue::NextStatus process_next ()
     {
         void * tag;
         bool ok = false;
 
+        std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now()
+            + std::chrono::milliseconds(100);
+
+        auto status = _cqueue->AsyncNext(& tag, & ok, deadline);
+
+        if (status == ::grpc::CompletionQueue::GOT_EVENT) {
+            auto response = static_cast<basic_async *>(tag);
+            response->process_response(ok);
+        } else if (status == ::grpc::CompletionQueue::SHUTDOWN) {
+            ;
+        } else if (status == ::grpc::CompletionQueue::TIMEOUT) {
+            ;
+        }
+
+        return status;
+    }
+
+    void process (std::function<bool ()> finish = [] () -> bool { return false; })
+    {
         while (true) {
-            std::chrono::system_clock::time_point deadline = std::chrono::system_clock::now()
-                + std::chrono::milliseconds(100);
-
-            auto status = _cqueue->AsyncNext(& tag, & ok, deadline);
-
-            if (status == ::grpc::CompletionQueue::GOT_EVENT) {
-                auto response = static_cast<basic_async *>(tag);
-                response->process_response(ok);
-            } else if (status == ::grpc::CompletionQueue::SHUTDOWN) {
+            if (process_next() == ::grpc::CompletionQueue::SHUTDOWN)
                 break;
-            } else if (status == ::grpc::CompletionQueue::TIMEOUT) {
-                ;
-            }
 
             if (finish()) {
                 break;
