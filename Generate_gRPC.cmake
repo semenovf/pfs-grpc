@@ -53,7 +53,7 @@ function (Generate_gRPC)
     endforeach()
 
     # OUTPUT VARIABLE: Generated sources
-    set(pfs_grpc_SOURCES ${pfs_grpc_SOURCES} PARENT_SCOPE)
+    set(pfs_grpc_SOURCES ${pfs_grpc_SOURCES})
 
     ################################################################################
     # Create Protobuf output directory
@@ -95,8 +95,7 @@ function (Generate_gRPC)
         ${pfs_grpc_SOURCE_DIR}/include
         ${pfs_grpc_GRPC_SOURCE_DIR}/include
         ${pfs_grpc_GRPC_SOURCE_DIR}/third_party/protobuf/src
-        ${_pfs_grpc_SOURCES_DIRECTORY}
-        PARENT_SCOPE)
+        ${_pfs_grpc_SOURCES_DIRECTORY})
 
     # OUTPUT VARIABLE: Libraries directories
     set(pfs_grpc_LIBRARY_DIRS
@@ -104,10 +103,15 @@ function (Generate_gRPC)
         ${CMAKE_BINARY_DIR}/3rdparty/grpc/third_party/protobuf
     #     ${CMAKE_BINARY_DIR}/3rdparty/grpc/third_party/cares/cares/lib
     #     ${CMAKE_BINARY_DIR}/3rdparty/grpc/third_party/zlib
-        PARENT_SCOPE)
+    )
 
     # OUTPUT VARIABLE: Libraries
     # Note: gRPC libraries with dependences:
     #       grpc++_reflection grpc gpr address_sorting cares protobuf z
-    set(pfs_grpc_LIBRARIES grpc++ PARENT_SCOPE)
+    set(pfs_grpc_LIBRARIES grpc++)
+
+    set(${_arg_PREFIX}_PROTO_SOURCES ${pfs_grpc_SOURCES} PARENT_SCOPE)
+    set(${_arg_PREFIX}_PROTO_INCLUDE_DIRS ${pfs_grpc_INCLUDE_DIRS} PARENT_SCOPE)
+    set(${_arg_PREFIX}_PROTO_LIB_DIRS ${pfs_grpc_LIBRARY_DIRS} PARENT_SCOPE)
+    set(${_arg_PREFIX}_PROTO_LIBS ${pfs_grpc_LIBRARIES} PARENT_SCOPE)
 endfunction(Generate_gRPC)

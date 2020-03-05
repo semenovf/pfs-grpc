@@ -47,7 +47,7 @@ function(Generate_proto)
     endforeach()
 
     # OUTPUT VARIABLE: Generated sources
-    set(pfs_protobuf_SOURCES ${pfs_protobuf_SOURCES} PARENT_SCOPE)
+    set(pfs_protobuf_SOURCES ${pfs_protobuf_SOURCES})
 
     ################################################################################
     # Create Protobuf output directory
@@ -73,13 +73,17 @@ function(Generate_proto)
     # OUTPUT VARIABLE: Include directories
     set(pfs_protobuf_INCLUDE_DIRS
         ${pfs_grpc_GRPC_SOURCE_DIR}/third_party/protobuf/src
-        ${_pfs_protobuf_SOURCES_DIRECTORY}
-        PARENT_SCOPE)
+        ${_pfs_protobuf_SOURCES_DIRECTORY})
 
     # OUTPUT VARIABLE: Libraries directories
     set(pfs_protobuf_LIBRARY_DIRS
         ${CMAKE_BINARY_DIR}/3rdparty/grpc/third_party/protobuf
         PARENT_SCOPE)
 
-    set(pfs_protobuf_LIBRARIES libprotobuf PARENT_SCOPE)
+    set(pfs_protobuf_LIBRARIES libprotobuf)# PARENT_SCOPE)
+
+    set(${_arg_PREFIX}_PROTO_SOURCES ${pfs_protobuf_SOURCES} PARENT_SCOPE)
+    set(${_arg_PREFIX}_PROTO_INCLUDE_DIRS ${pfs_protobuf_INCLUDE_DIRS} PARENT_SCOPE)
+    set(${_arg_PREFIX}_PROTO_LIB_DIRS ${pfs_protobuf_LIBRARY_DIRS} PARENT_SCOPE)
+    set(${_arg_PREFIX}_PROTO_LIBS ${pfs_protobuf_LIBRARIES} PARENT_SCOPE)
 endfunction(Generate_proto)
