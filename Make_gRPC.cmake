@@ -72,7 +72,7 @@ endif()
 
 if (MSVC)
     # Build with multiple processes
-    add_definitions(/MP)
+    #add_definitions(/MP) # --eugene--
     # MSVC warning suppressions
     add_definitions(
         /wd4018 # 'expression' : signed/unsigned mismatch

@@ -212,6 +212,9 @@ elseif(BUILD_SHARED_LIBS AND WIN32)
     set_target_properties(zlib PROPERTIES SUFFIX "1.dll")
 endif()
 
+set(SKIP_INSTALL_LIBRARIES ON) # Added by --eugene--
+set(SKIP_INSTALL_HEADERS ON) # Added by --eugene--
+set(SKIP_INSTALL_FILES ON) # Added by --eugene--
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
     install(TARGETS zlib zlibstatic
         RUNTIME DESTINATION "${INSTALL_BIN_DIR}"

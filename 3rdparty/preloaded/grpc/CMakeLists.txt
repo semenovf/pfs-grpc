@@ -857,7 +857,7 @@ target_link_libraries(alts_test_util
 
 endif (gRPC_BUILD_TESTS)
 
-add_library(gpr 
+add_library(gpr
 #  STATIC # --wladt-- (Workaround for Windows)
   src/core/lib/gpr/alloc.cc
   src/core/lib/gpr/atm.cc
@@ -971,9 +971,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 
@@ -1443,9 +1444,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 
@@ -1846,9 +1848,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 
@@ -2207,9 +2210,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 endif (gRPC_BUILD_TESTS)
@@ -2555,9 +2559,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 endif (gRPC_BUILD_TESTS)
@@ -2943,9 +2948,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 
@@ -3506,9 +3512,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 
@@ -3629,9 +3636,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -3705,9 +3713,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -3769,9 +3778,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -4044,9 +4054,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -4254,9 +4265,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -4605,11 +4617,11 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
-endforeach()
 
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
+endforeach()
 
 if (gRPC_INSTALL)
   install(TARGETS grpc++_unsecure EXPORT gRPCTargets
@@ -4732,9 +4744,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -4790,9 +4803,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 
 
@@ -4858,9 +4872,10 @@ foreach(_hdr
 )
   string(REPLACE "include/" "" _path ${_hdr})
   get_filename_component(_path ${_path} PATH)
-  install(FILES ${_hdr}
-    DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}"
-  )
+
+  if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${_hdr} DESTINATION "${gRPC_INSTALL_INCLUDEDIR}/${_path}")
+  endif()
 endforeach()
 endif (gRPC_BUILD_CODEGEN)
 
@@ -19485,13 +19500,16 @@ endif()
 foreach(_config gRPCConfig gRPCConfigVersion)
   configure_file(cmake/${_config}.cmake.in
     ${_config}.cmake @ONLY)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${_config}.cmake
-    DESTINATION ${gRPC_INSTALL_CMAKEDIR}
-  )
+
+    if (gRPC_INSTALL) # Added by --eugene--
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${_config}.cmake DESTINATION ${gRPC_INSTALL_CMAKEDIR})
+    endif()
 endforeach()
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/etc/roots.pem
-  DESTINATION ${gRPC_INSTALL_SHAREDIR})
+if (gRPC_INSTALL) # Added by --eugene--
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/etc/roots.pem
+        DESTINATION ${gRPC_INSTALL_SHAREDIR})
+endif()
 
 # Function to generate pkg-config files.
 function(generate_pkgconfig name description version requires
@@ -19507,8 +19525,10 @@ function(generate_pkgconfig name description version requires
     "${grpc_SOURCE_DIR}/cmake/pkg-config-template.pc.in"
     "${output_filepath}"
     @ONLY)
-  install(FILES "${output_filepath}"
-    DESTINATION "lib/pkgconfig/")
+
+    if (gRPC_INSTALL) # Added by --eugene--
+        install(FILES "${output_filepath}"DESTINATION "lib/pkgconfig/")
+    endif()
 endfunction()
 
 # gpr .pc file

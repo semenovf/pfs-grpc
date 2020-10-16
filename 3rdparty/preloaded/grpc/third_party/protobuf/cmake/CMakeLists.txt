@@ -162,7 +162,7 @@ endif (protobuf_BUILD_SHARED_LIBS)
 
 if (MSVC)
   # Build with multiple processes
-  add_definitions(/MP)
+  #add_definitions(/MP) # --eugene--
   # MSVC warning suppressions
   add_definitions(
     /wd4018 # 'expression' : signed/unsigned mismatch
@@ -242,7 +242,7 @@ if (protobuf_BUILD_CONFORMANCE)
   include(conformance.cmake)
 endif (protobuf_BUILD_CONFORMANCE)
 
-include(install.cmake)
+#include(install.cmake) # --eugene--
 
 if (protobuf_BUILD_EXAMPLES)
   include(examples.cmake)
