@@ -104,6 +104,18 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_
     target_compile_definitions(grpc++_unsecure PRIVATE "-D__STDC_LIMIT_MACROS")
 endif()
 
+# Workaround for ANDROID (boringssl)
+if (ANDROID)
+    target_compile_options(crypto_base PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(cipher_extra PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(bio PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(asn1 PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(cast PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(fipsmodule PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(blowfish PRIVATE "-Wno-implicit-fallthrough")
+    target_compile_options(des_decrepit PRIVATE "-Wno-implicit-fallthrough")
+endif()
+
 if (NOT ANDROID)
     if (CMAKE_RUNTIME_OUTPUT_DIRECTORY)
         set(pfs_grpc_PROTOC_BIN "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/protoc${CMAKE_EXECUTABLE_SUFFIX}")
@@ -120,11 +132,8 @@ endif()
 # OUTPUT VARIABLE: Protobuf compiler
 set(pfs_protobuf_PROTOC_BIN ${pfs_grpc_PROTOC_BIN})
 
-message(
-"================================================================================
-Protobuf compiler      : ${pfs_grpc_PROTOC_BIN}
-gRPC source dir        : ${pfs_grpc_GRPC_SOURCE_DIR}
-gRPC C++ plugin        : ${pfs_grpc_CPP_PLUGIN}
-gRPC codegen script    : ${pfs_grpc_CODEGEN}
-Protobuf codegen script: ${pfs_protobuf_CODEGEN}
-================================================================================")
+message(STATUS "Protobuf compiler      : ${pfs_grpc_PROTOC_BIN}")
+message(STATUS "gRPC source dir        : ${pfs_grpc_GRPC_SOURCE_DIR}")
+message(STATUS "gRPC C++ plugin        : ${pfs_grpc_CPP_PLUGIN}")
+message(STATUS "gRPC codegen script    : ${pfs_grpc_CODEGEN}")
+message(STATUS "Protobuf codegen script: ${pfs_protobuf_CODEGEN}")

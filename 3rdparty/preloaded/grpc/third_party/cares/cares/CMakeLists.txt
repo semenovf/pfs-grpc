@@ -30,7 +30,10 @@ SET (CARES_LIB_VERSIONINFO "5:0:3")
 
 OPTION (CARES_STATIC     "Build as a static library"                                             OFF)
 OPTION (CARES_SHARED     "Build as a shared library"                                             ON)
-OPTION (CARES_INSTALL    "Create installation targets (chain builders may want to disable this)" ON)
+#--wladt--
+#OPTION (CARES_INSTALL    "Create installation targets (chain builders may want to disable this)" ON)
+OPTION (CARES_INSTALL    "Create installation targets (chain builders may want to disable this)" OFF)
+
 OPTION (CARES_STATIC_PIC "Build the static library as PIC (position independent)"                OFF)
 OPTION (CARES_BUILD_TESTS "Build and run tests"                                                  OFF)
 OPTION (CARES_BUILD_TOOLS "Build tools"                                                          ON)

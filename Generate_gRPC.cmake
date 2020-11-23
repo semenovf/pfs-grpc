@@ -16,7 +16,7 @@ include(CMakeParseArguments)
 #
 function (Generate_gRPC)
     set(boolparm)
-    set(singleparm PREFIX DLL_API)
+    set(singleparm PREFIX DLL_API_MACRO)
     set(multiparm PROTOS)
 
     cmake_parse_arguments(_arg "${boolparm}" "${singleparm}" "${multiparm}" ${ARGN})
@@ -74,11 +74,11 @@ function (Generate_gRPC)
     ################################################################################
     # Generate Protobuf-specific source codes
     ################################################################################
-    if(_arg_DLL_API)
-        set(_pfs_protobuf_CPP_OUT "dllexport_decl=${_arg_DLL_API}:${_pfs_grpc_SOURCES_DIRECTORY}")
-    else(_arg_DLL_API)
+    if(_arg_DLL_API_MACRO)
+        set(_pfs_protobuf_CPP_OUT "dllexport_decl=${_arg_DLL_API_MACRO}:${_pfs_grpc_SOURCES_DIRECTORY}")
+    else()
         set(_pfs_protobuf_CPP_OUT ${_pfs_grpc_SOURCES_DIRECTORY})
-    endif(_arg_DLL_API)
+    endif()
 
     if(ANDROID)
     endif(ANDROID)
