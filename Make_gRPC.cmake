@@ -13,7 +13,6 @@
 # to use with GCCC 4.7.2) or loaded as submodule
 #
 ################################################################################
-
 cmake_minimum_required (VERSION 3.5.1) # Minimal version for gRPC
 
 option(FORCE_PRELOADED_GRPC "Force process preloaded version of gRPC" OFF)
