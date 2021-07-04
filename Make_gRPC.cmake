@@ -88,6 +88,7 @@ if (MSVC)
         /wd4355 # 'this' : used in base member initializer list
         /wd4506 # no definition for inline function 'function'
         /wd4996 # The compiler encountered a deprecated declaration.
+        /wd5208 # unnamed class used in typedef name cannot declare members other than non-static data members, member enumerations, or member classes
     )
 endif(MSVC)
 
