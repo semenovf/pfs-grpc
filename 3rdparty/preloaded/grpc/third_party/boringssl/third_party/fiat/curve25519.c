@@ -1899,10 +1899,10 @@ static void table_select(ge_precomp *t, int pos, signed char b) {
 // h = a * B
 // where a = a[0]+256*a[1]+...+256^31 a[31]
 // B is the Ed25519 base point (x,4/5) with x positive.
-//
-// Preconditions:
-//   a[31] <= 127
-void x25519_ge_scalarmult_base(ge_p3 *h, const uint8_t *a) {
+//                                                        ---- --wladt-- 27.10.2021
+// Preconditions:                                         |
+//   a[31] <= 127                                         v
+void x25519_ge_scalarmult_base(ge_p3 *h, const uint8_t a[32]) {
   signed char e[64];
   signed char carry;
   ge_p1p1 r;
